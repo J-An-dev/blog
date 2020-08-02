@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>J. An&#39;s Blog</title>
+  
+  
+  <link href="/blog/atom.xml" rel="self"/>
+  
+  <link href="http://j-an.org/blog/"/>
+  <updated>2020-08-02T04:35:16.714Z</updated>
+  <id>http://j-an.org/blog/</id>
+  
+  <author>
+    <name>J. An</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Load Third-Party Netflix Subtitles</title>
+    <link href="http://j-an.org/blog/netflix-subtitles/"/>
+    <id>http://j-an.org/blog/netflix-subtitles/</id>
+    <published>2020-08-02T04:32:40.000Z</published>
+    <updated>2020-08-02T04:35:16.714Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;As a Netflix subscriber, you may find some shows or movies are geo-restricted in the specific countires/regions. After spending a bunch of time selecting a usable VPN to trick Netflix into thinking you are in the region the content is avaliable, you may then face another problem: the subtitle for the show in this region only supports the local language and you may not understand it (i.e., the show &lt;em&gt;Solitary Gourmet&lt;/em&gt; only provides Janpanese subtitle in Janpan). Well, don’t be panic, here is a way to help you load any third-party subtitle when watching netflix and no plugins needed.&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="Netflix" scheme="http://j-an.org/blog/tags/Netflix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://j-an.org/blog/hello-world/"/>
+    <id>http://j-an.org/blog/hello-world/</id>
+    <published>2020-08-02T04:00:00.000Z</published>
+    <updated>2020-08-02T04:35:59.818Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="Hexo" scheme="http://j-an.org/blog/tags/Hexo/"/>
+    
+      <category term="LaTeX" scheme="http://j-an.org/blog/tags/LaTeX/"/>
+    
+  </entry>
+  
+</feed>

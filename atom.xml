@@ -5,9 +5,9 @@
   
   <link href="/blog/atom.xml" rel="self"/>
   
-  <link href="http://j-an.org/blog/"/>
+  <link href="https://j-an.org/blog/"/>
   <updated>2020-08-02T04:35:16.714Z</updated>
-  <id>http://j-an.org/blog/</id>
+  <id>https://j-an.org/blog/</id>
   
   <author>
     <name>J. An</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Load Third-Party Netflix Subtitles</title>
-    <link href="http://j-an.org/blog/netflix-subtitles/"/>
-    <id>http://j-an.org/blog/netflix-subtitles/</id>
+    <link href="https://j-an.org/blog/netflix-subtitles/"/>
+    <id>https://j-an.org/blog/netflix-subtitles/</id>
     <published>2020-08-02T04:32:40.000Z</published>
     <updated>2020-08-02T04:35:16.714Z</updated>
     
@@ -31,14 +31,14 @@
     
     
     
-      <category term="Netflix" scheme="http://j-an.org/blog/tags/Netflix/"/>
+      <category term="Netflix" scheme="https://j-an.org/blog/tags/Netflix/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://j-an.org/blog/hello-world/"/>
-    <id>http://j-an.org/blog/hello-world/</id>
+    <link href="https://j-an.org/blog/hello-world/"/>
+    <id>https://j-an.org/blog/hello-world/</id>
     <published>2020-08-02T04:00:00.000Z</published>
     <updated>2020-08-02T04:35:59.818Z</updated>
     
@@ -50,9 +50,9 @@
     
     
     
-      <category term="Hexo" scheme="http://j-an.org/blog/tags/Hexo/"/>
+      <category term="Hexo" scheme="https://j-an.org/blog/tags/Hexo/"/>
     
-      <category term="LaTeX" scheme="http://j-an.org/blog/tags/LaTeX/"/>
+      <category term="LaTeX" scheme="https://j-an.org/blog/tags/LaTeX/"/>
     
   </entry>
   

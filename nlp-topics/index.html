@@ -1,0 +1,1225 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>NLP Topics · J. An's Blog</title><meta name="description" content="Natural language processing is a subfield of linguistics, computer science, information engineering, and artificial intelligence concerned with the in"><meta name="keywords" content=""><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/blog/css/bootstrap.min.css"><link rel="stylesheet" href="/blog/css/font-awesome.min.css"><link rel="stylesheet" href="/blog/css/style.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        }
+    })
+</script><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script><meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/blog/css/prism-base16-ateliersulphurpool.light.css" type="text/css">
+<link rel="stylesheet" href="/blog/css/prism-line-numbers.css" type="text/css"></head><body><div id="stage" class="container"><div class="row"><div id="side-bar" class="col-sm-3 col-xs-12 side-container invisible"><div class="vertical-text site-title"><h3 tabindex="-1" class="site-title-small"><a href="/blog/" class="a-title"></a></h3><h1 tabindex="-1" class="site-title-large"><a href="/blog/" class="a-title">J. An's Blog</a></h1><!--h6(onclick="triggerSiteNav()") Trigger--></div><br class="visible-lg visible-md visible-sm"><div id="site-nav" class="site-title-links"><ul><li><a href="/blog/">Home</a></li><li><a href="/blog/archives">Archive</a></li><li><a href="/blog/tags">Tags</a></li><li class="soc"><a href="https://github.com/j-an-dev" target="_blank" rel="noopener noreferrer"><i class="fa fa-github">&nbsp;</i></a><a href="https://twitter.com/anjie_tweet" target="_blank" rel="noopener noreferrer"><i class="fa fa-twitter">&nbsp;</i></a><a href="https://www.instagram.com/aj_ins" target="_blank" rel="noopener noreferrer"><i class="fa fa-instagram">&nbsp;</i></a></li></ul><div class="visible-lg visible-md visible-sm site-nav-footer"><br class="site-nav-footer-br"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div><div id="main-container" class="col-sm-9 col-xs-12 main-container invisible"><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post-container"><p class="post-title"><a>NLP Topics</a></p><p class="post-meta"><span class="date meta-item">Posted on&nbsp;2020-08-02</span><span class="meta-item"><i class="fa fa-tag"></i><span>&nbsp;</span><a href="/blog/tags/ML/" title="ML" class="a-tag">ML</a><span>&nbsp;</span><a href="/blog/tags/NLP/" title="NLP" class="a-tag">NLP</a><span>&nbsp;</span></span></p><p class="post-abstract"><p>Natural language processing is a subfield of linguistics, computer science, information engineering, and artificial intelligence concerned with the interactions between computers and human languages, in particular how to program computers to process and analyze large amounts of natural language data. This article collects a bunch of topics in this area and gives a brief explanation for each of them. The original layout is provided by Prof. Daniel Bauer in his NLP class. I editied it and tried to enrich the content for further study use.<a id="more"></a> <a href="/blog/nlp-topics/nlp-topics.html">Click to read in a clear HTML version</a></p>
+<ul>
+<li><a href="#general-linguistics-concepts">General Linguistics Concepts</a></li>
+<li><a href="#text-processing">Text Processing</a></li>
+<li><a href="#text-classification">Text Classification</a></li>
+<li><a href="#probability-background">Probability Background</a></li>
+<li><a href="#language-models">Language Models</a></li>
+<li><a href="#sequence-labeling-pos-tagging">Sequence Labeling (POS tagging)</a></li>
+<li><a href="#parsing-with-context-free-grammars">Parsing with Context Free Grammars</a></li>
+<li><a href="#dependency-parsing">Dependency parsing</a></li>
+<li><a href="#machine-learning">Machine Learning</a></li>
+<li><a href="#two-approaches-to-language-meaning">Two Approaches to Language Meaning</a></li>
+<li><a href="#formal-lexical-semantics">Formal Lexical Semantics</a></li>
+<li><a href="#distributional-vector-based-lexical-semantics">Distributional (Vector-based) Lexical Semantics</a></li>
+<li><a href="#recurrent-neural-nets">Recurrent Neural Nets</a></li>
+<li><a href="#transformer-based-models">Transformer Based Models</a></li>
+<li><a href="#semantic-role-labeling">Semantic Role Labeling</a></li>
+<li><a href="#statistical-mt">Statistical MT</a></li>
+</ul>
+<h1 id="General-Linguistics-Concepts"><a href="#General-Linguistics-Concepts" class="headerlink" title="General Linguistics Concepts"></a>General Linguistics Concepts</h1><p>(Parts of J&amp;M 2nd ed. Ch 1 but mostly split over different chapters in J&amp;M. Ch.1 not yet available in 3rd ed.)</p>
+<ul>
+<li>Levels of linguistic representation: <ul>
+<li>phonetics/phonology: 语音学 sounds and sound patterns of language </li>
+<li>morphology: 词法学 structure and formation of words</li>
+<li>syntax: 句法 word order</li>
+<li>semantics: 语义学（词/句的本身意思） word and sentence meaning</li>
+<li>pragmatics: 语用学（用词/句的目的） influence of context and situation</li>
+</ul>
+</li>
+<li>Ambiguity, know some examples in syntax and semantics, including PP attachment, noun-noun compounds.<ul>
+<li>semantics: Stolen Painting Found by Tree</li>
+<li>syntax/Prepositional Phrase (PP) attachment: Enraged cow injures farmer with axe</li>
+<li>noun-noun compounds: country song platinum album</li>
+</ul>
+</li>
+<li>Garden-path sentences<ul>
+<li><code>The horse raced past the barn fell</code></li>
+<li><strong>raced</strong> can be a past tense verb or a past participle (indicating passive voice).</li>
+<li>The verb interpretation is more likely before fell is read.</li>
+<li>Once fell is read, the verb interpretation is impossible.</li>
+</ul>
+</li>
+<li>Type/Token distinction<ul>
+<li>Type: number of distinct words in a corpus (vocabulary size). <strong>doesn’t count duplicates</strong></li>
+<li>Token: Total number of word occurrences. <strong>count duplicates</strong></li>
+</ul>
+</li>
+<li>Know the following terms: word form, stem, lemma, lexeme<ul>
+<li>Word Form: 本来的变形 the inflected form as it actually appears in the corpus. “produced”</li>
+<li>Word Stem: The part of the word that never changes between morphological variations. “produc”</li>
+<li>Lemma: 类似动词原形 an abstract base form, shared by word forms, having the same stem, part of speech, and word sense – stands for <strong>the class of words with stem</strong>. “produce”</li>
+<li>Lexeme: a pairing of a word form with it’s sense (a synset). </li>
+</ul>
+</li>
+<li>Parts of speech:<ul>
+<li>know the 9 traditional POS and some of the Penn Treebank tags (but no need to remember the precise tagset).</li>
+<li>noun, pronoun, determiner, adjective, verb, adverb, preposition介词, conjuction连词, interjection感叹词</li>
+</ul>
+</li>
+<li>Types of Linguistic Theories<ul>
+<li>Prescriptive: “This is how people ought to talk.”</li>
+<li>Descriptive: provide a formal account of how people talk. &lt;- NLP focuses on the descriptive part.</li>
+<li>Explanatory: explain why people talk a certain way (identify underlying cognitive, or neural mechanism)</li>
+</ul>
+</li>
+<li>Syntax: Study of structure of language<ul>
+<li>determine how words are arranged in a sentence and the relationship between them.</li>
+<li>judge if a sentence is grammatical or not</li>
+<li>Constituency and Recursion. Constituency tests (*). <ul>
+<li>A constituent is a group of words that behave as a single unit (within a hierarchical structure)</li>
+<li>Constituency Tests: Move the phrase around to test, but cannot tear it apart</li>
+<li>Category of Constituent: XP, where X is the part-of-speech of the head, like NP, VP, AdjP, AdvP, DetP</li>
+</ul>
+</li>
+<li>Dependency<ul>
+<li>obtain a dependency structure by projecting the heads up the tree</li>
+<li>Percolation table allow to convert constituency structure to dependency structure</li>
+</ul>
+</li>
+<li>Grammatical Relations<ul>
+<li>edges can be labeled with grammatical relations between words (typed dependencies)</li>
+</ul>
+</li>
+<li>Subcategorization / Valency (and relationship to semantic roles).<ul>
+<li>Verbs may take a different number of arguments of different syntactic types in different positions (applies to other types of words as well).</li>
+</ul>
+</li>
+<li>Long-distance dependencies.</li>
+<li>Syntactic heads (connection between dependency and constituency structure).</li>
+<li>Center embeddings.</li>
+<li>Dependency syntax: <ul>
+<li>Head, dependent<ul>
+<li>Head: point from</li>
+<li>Depend: be pointed to</li>
+</ul>
+</li>
+<li>dependency relations and labels<ul>
+<li>subj(likes-02, girl-01) <ul>
+<li>like: head</li>
+<li>girl: dependent</li>
+<li>subj: the relation</li>
+<li>number: position of word in sentence</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>projectivity: If dependency edges cross, the dependency structure is non-projective</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Text-Processing"><a href="#Text-Processing" class="headerlink" title="Text Processing"></a>Text Processing</h1><p>(Split over different chapters in J&amp;M. Parts of <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/6.pdf">J&amp;M 3rd ed. Ch. 6</a>)</p>
+<ul>
+<li>Text normalization: Every NLP task needs to do some text normalization.<ul>
+<li>Segmenting / tokenizing words in running text</li>
+<li>Normalizing word forms (lemmatization or stemming, possibly replacing named-entities: people name -&gt; PER).</li>
+<li>Sentence splitting</li>
+</ul>
+</li>
+<li>Linguistic Terminology<ul>
+<li>Sentence: Unit of written language.</li>
+<li>Utterance: 话语 Unit of spoken language.</li>
+<li>Word Form: 本来的变形 the inflected form as it actually appears in the corpus. “produced”</li>
+<li>Word Stem: The part of the word that never changes between morphological variations. “produc”</li>
+<li>Lemma: 类似动词原形 an abstract base form, shared by word forms, having the same stem, part of speech, and word sense – stands for <strong>the class of words with stem</strong>. “produce”</li>
+<li>Type: number of distinct words in a corpus (vocabulary size). <strong>doesn’t count duplicates</strong></li>
+<li>Token: Total number of word occurrences. <strong>count duplicates</strong></li>
+</ul>
+</li>
+<li>Tokenization (word segmentation)<ul>
+<li>The process of segmenting text (a sequence of characters) into a sequence of tokens (words).</li>
+<li>Weak: Separate off punctuation. Then split on whitespaces.</li>
+</ul>
+</li>
+<li>Sentence splitting. </li>
+<li>Lemmatization<ul>
+<li>Converting Lemmas into their base form.</li>
+</ul>
+</li>
+<li>Know why these are useful and challenging</li>
+</ul>
+<h1 id="Text-Classification"><a href="#Text-Classification" class="headerlink" title="Text Classification"></a>Text Classification</h1><p>(<a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/4.pdf">J&amp;M 3rd ed. Ch. 6</a>)</p>
+<ul>
+<li>Task definition and applications:<ul>
+<li>Definition: Given a representation of some document $d$, identify which class $c \in C$ the document belongs to.</li>
+<li>Applications: <ul>
+<li>Spam detection</li>
+<li>Mood / Sentiment detection</li>
+<li>Author identification</li>
+<li>Identifying political affiliation</li>
+<li>Word Sense Disambiguation</li>
+</ul>
+</li>
+<li>Machine learning problem: Supervised ML: Fixed set of classes $C$. Train a classifier from a set of labeled <code>&lt;document,class&gt;</code> pairs<ul>
+<li>Discriminative vs. Generative models.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Document representation: <ul>
+<li>Set-of-words</li>
+<li>Bag-of-words: multi-set</li>
+<li>Vector space model: Each word corresponds to one dimension in vector space, with entries:<ul>
+<li>Binary (Word appears / does not appear)</li>
+<li>Raw or normalized frequency counts</li>
+<li>Weighted frequency counts</li>
+<li>Probabilities</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Naive Bayes’ and independence assumptions in text classification.<ul>
+<li>Naive assumptions: all the attributes are independent of each other, given the label<ul>
+<li>Without the independence assumption we would have to estimate $P(X_1,…,X_d|Label)$</li>
+<li>There would be many combinations of $X_1,…,X_d$ that are never seen (sparse data).</li>
+<li>The independence assumption allows us to estimate each $P(X_i|Label)$ independently.</li>
+<li>Reality: the words do not really independent of each other</li>
+</ul>
+</li>
+<li>$P(Label|X_1,…,X_d) = \alpha [P(Label) \prod_i P(X_i|Label) ]$</li>
+<li>Goal: Use the training data to estimate $P(Label)$ and $P(X_i|Label)$ from training data.</li>
+<li>Estimate the prior and posterior probabilities using Maximum Likelihood Estimates (MLE):<ul>
+<li>Prior: $P(y)=\frac{Count(y)}{\sum_{y’ \in Y}Count(y’)}$</li>
+<li>Posterior: $P(x_i|y)=\frac{Coount(x_i,y)}{Count(y)}$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Probability-Background"><a href="#Probability-Background" class="headerlink" title="Probability Background"></a>Probability Background</h1><ul>
+<li>Prior vs. conditional probability<ul>
+<li>Bayesian Statistics: Probabilities express the degree of belief we have in the possible interpretations.<ul>
+<li>Prior probabilities: Probability of an interpretation prior to seeing any evidence.</li>
+<li>Conditional (Posterior) probability: Probability of an interpretation after taking evidence into account.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Sample space, basic outcomes<ul>
+<li>Each $\omega \in \Omega$ is a possible basic outcome / “possible world” (e.g. the 6 possible rolls of a die).</li>
+</ul>
+</li>
+<li>Probability distribution<ul>
+<li>A probability distribution assigns a probability to each basic outcome. (<strong>Sum of all outcomes equal to 1</strong>)</li>
+</ul>
+</li>
+<li>Events<ul>
+<li>An event $A$ is any subset of $\Omega$</li>
+</ul>
+</li>
+<li>Random variables<ul>
+<li>A random variable is a function from basic outcomes to some range, e.g. real numbers or booleans.</li>
+<li>A distribution $P$ induces a probability distribution for any random variable. </li>
+</ul>
+</li>
+<li>Product rule<ul>
+<li>$P(A,B)=P(B) \times P(A|B) = P(A) \times P(B|A)$</li>
+</ul>
+</li>
+<li>Chain rule<ul>
+<li>$P(A_n,…,A_1)=P(A_n|A_{n-1},…,A_1) \times P(A_{n-1},…,A_1)$</li>
+</ul>
+</li>
+<li>Bayes’ rule<ul>
+<li>$P(A|B)=\frac{P(B|A) \times P(A)}{P(B)}$</li>
+</ul>
+</li>
+<li>Conditional independence<ul>
+<li>$P(B,C|A) = P(B|A) \times P(C|A)$</li>
+<li>$P(B|A,C) = P(B|A)$ and $P(C|B,A)=P(C|A)$</li>
+</ul>
+</li>
+<li>Discriminative vs. generative models<ul>
+<li>Discriminative algorithms: learn $P(y|x)$ directly<ul>
+<li>Model conditional distribution of the label given the data $P(y|x)$</li>
+<li>Learns decision boundaries that separate instances of the different classes</li>
+<li>To predict a new example, check on which side of the decision boundary it falls.</li>
+</ul>
+</li>
+<li>Generative algorithms: use Bayes rule $P(y|x)=\frac{P(x|y) \times P(y)}{P(x)}$ (estimate $P(x|y)$ and $P(y)$)<ul>
+<li>Assume the observed data is being “generated” by a “hidden” class label.</li>
+<li>Build a different model for each class (Different conditional distribution for each class)</li>
+<li>To predict a new example, check it under each of the models and see which one matches best (With the highest probability)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Noisy channel model<ul>
+<li>The noisy channel model assumes that an observation (for example, a sequence of words) has been generated probabilistically by some underlying hidden state sequence (for example a sequence of P.O.S tags).</li>
+<li>Goal: “Decoding” is the task of finding the most likely hidden input sequence given the observed output using Bayesian inference.</li>
+</ul>
+</li>
+<li>Calculating with probabilities in log space<ul>
+<li>Probabilities can become very small, often work with log probabilities in practice.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Language-Models"><a href="#Language-Models" class="headerlink" title="Language Models"></a>Language Models</h1><p>(J&amp;M 2nd ed. Ch 4.1-4.8, <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/4.pdf">J&amp;M 3rd ed. Ch 4</a>)</p>
+<ul>
+<li>Task definition and applications<ul>
+<li>Task definition: predict the next word given the context, and also can be used to describe the probability of an entire sentence, not just the last word.</li>
+<li>Applications: speech recognition, handwritten character recognition, spelling correction, text entry UI, machine translation</li>
+</ul>
+</li>
+<li>Probability of the next word and probability of a sentence<ul>
+<li>Idea: We do not need to model domain, syntactic, and lexical knowledge perfectly.</li>
+<li>Instead, we can rely on the notion of probability of a sequence (letters, words…)<ul>
+<li>predict next word based on the given sequence $P(w_n|w_1,w_2,w_3,…,w_{n-1})$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Markov independence assumption<ul>
+<li>simple independence assumption (Markov assumption): The probability to see $w_n$ depends only on the previous<br>k-1 words (K is actually n in n-gram)</li>
+</ul>
+</li>
+<li>n-gram language models<ul>
+<li>Naive Bayes (each word is independent to others)</li>
+</ul>
+</li>
+<li>Role of the START and END markers<ul>
+<li>use a special marker STOP/END that indicates the end of a sentence.</li>
+<li>sentence with START and STOP markers to provide the appropriate context. <em>START i want to eat Chinese food END</em></li>
+<li>bigram: P(i|START)·P(want|i)·P(to|want)·P(eat|to)·P(Chinese|eat)·P(food|Chinese)·P(END|food)</li>
+<li>trigtam: P(i|START,START)·P(want|START,i)·P(to|i,want)·P(eat|want,to)·P(Chinese|to,eat)·P(food|eat,Chinese)·P(END|Chinese,food)</li>
+</ul>
+</li>
+<li>Estimating n-gram probabilities from a corpus: <ul>
+<li>Maximum Likelihood Estimates<ul>
+<li>bigram: $P(w|u)=\frac{count(u,w)}{count(u)}$ &lt;- u first, w next in $count(u,w)$, order matters</li>
+<li>trigtam: $P(w|u,v)=\frac{count(u,v,w)}{count(u,v)}$</li>
+</ul>
+</li>
+<li>Dealing with unseen Tokens<ul>
+<li>Start with a <strong>specific lexicon 词典 of known tokens</strong>.</li>
+<li>Replace all tokens in the training and testing corpus that are not in the lexicon with an UNK token. P(cat, dog) -&gt; P(cat, UNK)</li>
+<li>Practical approach:<ul>
+<li>Lexicon contains all words that appear more than k times in the training corpus (appear once is too rare, should not be included in lexicon)</li>
+<li>Replace all other tokens with UNK.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Dealing with unseen contexts: Smoothing and Back-off<ul>
+<li>Smoothing / Discounting: Move some probability mass from seen trigrams to unseen trigrams.</li>
+<li>Back-off: Use n-1-…, n-2-… grams to compute n-gram probability.</li>
+<li>Additive Smoothing:<ul>
+<li>Classic approach: Laplacian, a.k.a. additive smoothing</li>
+<li>unigram: $P(w_i)=\frac{count(w_i)+1}{N+V}$</li>
+<li>bigram: $P(w|u)=\frac{count(u,w)+1}{count(u)+V}$</li>
+<li>$N$ is the number of tokens, $V$ is the number of types (i.e.size of the vocabulary)</li>
+</ul>
+</li>
+<li>Linear Interpolation:<ul>
+<li>Use denser distributions of shorter n-grams to “fill in” sparse n-gram distributions</li>
+<li>$P(w|u,v)= \lambda_1 P_{MLE}(w|u,v) + \lambda_2 P_{MLE}(w|v) + \lambda_3 P_{MLE}(w)$</li>
+<li>$\lambda_1, \lambda_2, \lambda_3 &gt;0$ and $\lambda_1+\lambda_2+\lambda_3=1$</li>
+<li>Parameters $\lambda$ can be estimated on development data (for example, using Expectation Maximization).</li>
+</ul>
+</li>
+<li>Discounting:<ul>
+<li>Idea: set aside some probability mass, then fill in the missing mass using back-off.</li>
+<li>$count^*(v,w)=count(v,w)-\beta$ where $0&lt;\beta&lt;1$</li>
+<li>then for all seen bigrams: $P(w|v)=\frac{count^*(v,w)}{count(v)}$</li>
+<li>for each context $v$ the missing probability mass is: $\alpha(v) = 1 - \sum_{w:count(v,w)&gt;0} \frac{count^*(v,w)}{count(v)}$</li>
+<li>then divide this held-out mass between the unseen words (evenly or using back-off)</li>
+</ul>
+</li>
+<li>Katz’ Backoff:<ul>
+<li>Divide the held-out probability mass $\alpha(v)$ proportionally to the unigram probability of the unseen words in context $v$</li>
+<li>Additive Smoothing gives the same probability to unseen words, and Back-Off fix it. Word appears rarely in unigram should also appears rarely in unseen.</li>
+<li>For trigrams: recursively compute backoff-probability for unseen <strong>bigrams</strong>. Then distribute the held-out probability mass proportionally to that bigram backoff-probability.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Perplexity (*): Measure of surprises<ul>
+<li>Perplexity (per word) measures how well the n-gram model predicts the sample</li>
+<li>Perplexity is defined as $2^{-l}$, where $l=\frac{1}{M}\sum_{i=1}^{m} \log_2 P(s_i)$</li>
+<li>M: the total number of words tokens (include STOP)</li>
+<li>m: the total number of sentences</li>
+<li>Lower perplexity = better model. Intuition:<ul>
+<li>Assume we are predicting one word at a time.</li>
+<li>With uniform distribution, all successor words are equally likely. Perplexity is equal to vocabulary size. (可以从vocabulary的所有词中等可能选择下一个词)</li>
+<li>Perplexity can be thought of as “effective vocabulary size” (perplexity越小，下一个词选择的范围越精确，model的准确率越好)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Sequence-Labeling-POS-tagging"><a href="#Sequence-Labeling-POS-tagging" class="headerlink" title="Sequence Labeling (POS tagging)"></a>Sequence Labeling (POS tagging)</h1><p>(J&amp;M 2nd ed Ch 5.1-5.5, <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/10.pdf">J&amp;M 3rd ed. Ch 10.1-10.4</a>)</p>
+<ul>
+<li>Linguistic tests for part of speech (*).<ul>
+<li>P.O.S. tag-set should contain morphological and maybe syntactic information.</li>
+</ul>
+</li>
+<li>Part-of-Speech Tagging<ul>
+<li>Goal: Assign a part-of-speech label to each word in a sentence.</li>
+<li>example off a sequence labeling task (a translation from sequence of words to sequence of tags)</li>
+<li>correct POS depends on context</li>
+<li>Infer the most likely sequence of hidden variables given the sequence of observed words</li>
+</ul>
+</li>
+<li>Noisy Channel Model:<ul>
+<li>Goal: figure out what the original input to the the channel was.</li>
+<li>Use Bayes’ rule: $\text{argmax}<em>{tags} P(tags|words)=\text{argmax}</em>{tags}\frac{P(tags) P(word|tags)}{P(words)}$</li>
+</ul>
+</li>
+<li>Hidden Markov Model: <ul>
+<li>Generative (Bayesian) probability model</li>
+<li>Observations (sequence of tokens/words)</li>
+<li>Hidden states (sequence of part of speech tags)</li>
+<li>Hidden sequence is generated by an n-gram language model (typically a bigram model) $P(t_1,…,t_n)=\prod_{i=1}^{n}P(t_i|t_{i-1})$</li>
+<li>Transition probabilities, emission probabilities<ul>
+<li>transition probabilities: given by Markov chain</li>
+<li>emission probabilities: generate the certain word given the underlying tag/state</li>
+<li>$P(t_1,…,t_n,w_1,…,w_n)=\prod_{i=1}^{n}P(t_i|t_{i-1})P(w_i|t_i)$</li>
+</ul>
+</li>
+<li>Markov chain<ul>
+<li>A Markov chain is a sequence of random variables $X_1,X_2,…$</li>
+<li>The domain of these variables is a set of states</li>
+<li>Markov assumption: Next state depends only on current state.</li>
+</ul>
+</li>
+<li>Three tasks on HMMS: Decoding, Evaluation, Training<ul>
+<li>Decoding: Find the most likely sequence of tags:<ul>
+<li>Viterbi algorithm (dynamic programming, know the algorithm and data structures involved)</li>
+<li>data structures: Create a table $\pi$, such that each entry $\pi [k,t]$ contains the score of the highest-probability sequence ending in tag $t$ at time $k$.</li>
+<li>$\pi[k,t] \leftarrow \max_s \pi[k-1,s] \times P(t|s) \times P(w_k|t)$</li>
+<li>overall running time: O(n)  (for k=1 to n)</li>
+</ul>
+</li>
+<li>Evaluation: Given a sequence of words, find the total probability for this word sequence given an HMM.<ul>
+<li>an view the HMM as another type of language model</li>
+<li>Spurious ambiguity: multiple hidden sequences lead to the same observation. </li>
+<li>Forward algorithm (difference to Viterbi).<br>$$P(w_1,…,w_n)=\sum_{t_1,…,t_n}P(t_1,…,t_n,w_1,…,w_n)=\sum_{t_1,…,t_n}[\prod_{i=1}^{n}P(t_i|t_{i-1})P(w_i|t_i)]$$</li>
+<li>data structures: Create a table $\pi$, such that each entry $\pi [k,t]$ contains the sum of the probabilities of all tag/word sequences ending in tag $t$ at time $k$.</li>
+<li>$\pi[k,t] \leftarrow \sum_s \pi[k-1,s] \times P(t|s) \times P(w_k|t)$</li>
+<li>overall running time: O(n)</li>
+<li>the advantage over a plain word n-gram model: HMM can capture a limited amount of syntactic information</li>
+</ul>
+</li>
+<li>Training: Estimate emission and transition probabilities from training data. We only discussed maximum likelihood estimates.</li>
+</ul>
+</li>
+<li>Extending HMMs to trigrams<ul>
+<li>Instead of using a unigram context $P(t_i|t_{i-1})$, use a bigram context $P(t_i|t_{i-2}t_{i-1})$</li>
+<li>The HMM probability for a given tag and word sequence is: $\prod_{i=1}^{n}P(t_i|t_{i-2}t_{i-1})P(w_i|t_i)$</li>
+<li>Need to handle data sparseness when estimating transition probabilities (for example using backoff or linear interpolation)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Applying HMMs to other sequence labeling tasks, for example Named Entity Recognition<ul>
+<li>B.I.O. tags for NER.<ul>
+<li>O - outside of named entity</li>
+<li>I - inside named entity</li>
+<li>B - first word (beginning) of named entity <ul>
+<li>There could be two name entities appear immediately adjacent, so the B tag allows to identify where each of name entity starts</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Parsing-with-Context-Free-Grammars"><a href="#Parsing-with-Context-Free-Grammars" class="headerlink" title="Parsing with Context Free Grammars"></a>Parsing with Context Free Grammars</h1><p>(J&amp;M 2nd ed Ch. 12 and 13.1-13.4 and 14.1-14.4 and Ch. 16, <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/11.pdf">J&amp;M 3rd ed. Ch. 11.1-11.5</a> and <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/12.pdf">Ch. 12.1-12.2</a> [Earley not covered in 3rd. ed] and <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/13.pdf">Ch 13.1-13.4</a>, [complexity classes not covered in 3rd ed.] )</p>
+<ul>
+<li>Tree representation of constituency structure. Phrase labels.</li>
+<li>CFG definition: <ul>
+<li>CFGs are context free: applicability of a rule depends only on the nonterminal symbol, not on its context.</li>
+<li>terminals: $\Sigma$</li>
+<li>nonterminals: $N$</li>
+<li>start symbol: $S \in N$</li>
+<li>productions: set $R$ of productions of the form $A \rightarrow \beta$ where $A \in N$ and $\beta \in (\Sigma \cup N)$</li>
+</ul>
+</li>
+<li>derivations and language of a CFG<ul>
+<li>The language of a given CFG $G=(N,\Sigma,R,S)$ is defined as the set of all terminal strings that can be derived from the start symbol</li>
+</ul>
+</li>
+<li>derivation trees (vs. derived string).<ul>
+<li>CFG is a string rewriting formalism, so the derived objects are strings. </li>
+<li>A derivation is a sequence of rewriting steps</li>
+<li>the order in which multiple non-terminals in a partially derived string are replaced does not matter</li>
+<li>can represent identical derivations in a derivation tree</li>
+<li>The derivation tree implies a parse tree</li>
+</ul>
+</li>
+<li>Regular grammars (and know that these are equivalent to finite state machines - you don’t need to know FSAs in detail for the final (*)<ul>
+<li>Regular Grammars and FSAs describe the same set of languages. For any regular grammar, one can construct an FSA recognizing the same language.  The automaton can be used directly to recognize sentences, while the grammar needs a separate parsing algorithm. The terminal states are just chosen by the developer (or by the algorithm that creates the FSA from a regular grammar or from a regular expression).</li>
+</ul>
+</li>
+<li>Complexity classes<ul>
+<li>Regular languages. (regular grammars, regular expressions, finite state automata)</li>
+<li>Context-free languages. (context-free string grammars, pushdown automata).</li>
+<li>“Mildly” context sensitive languages.</li>
+<li>Context-sensitive languages.</li>
+<li>Recursively enumerable languages (Turing machines).</li>
+<li>“Chomsky hierarchy”: Regular languages $\subset$ Context-free languages $\subset$ “Mildly” context sensitive languages $\subset$ Context-sensitive languages $\subset$ Recursively enumerable languages</li>
+<li>Center embeddings as an example of a <strong>non-regular</strong> phenomenon. <ul>
+<li>Regular grammars cannot capture long-distance dependencies</li>
+<li>It’s a phenomenon that exists in natural languages (like English) that cannot be described using regular grammars (for formal reasons), proving that <strong>natural languages are not regular</strong></li>
+</ul>
+</li>
+<li>Cross-serial dependencies as an example of a <strong>non-context-free</strong> phenomenon.<ul>
+<li>CFGs cannot describe crossing dependencies</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Probabilitistic context free grammars (PCFG):  <ul>
+<li>Probability of a tree vs. probability of a sentence. </li>
+<li>Maximum likelihood estimates from treebanks.</li>
+<li>Computing the most likely parse tree using CKY.</li>
+</ul>
+</li>
+<li>Recognition (membership checking) problem vs. parsing</li>
+<li>Top-down vs. bottom-up parsing. <ul>
+<li>Bottom-up: Start at the words (terminal symbols) and see which subtrees you can build. Then combine these subtrees into larger trees. (Driven by the input sentence.)</li>
+<li>Top-down: Start at the start symbol (S), try to apply production rules that are compatible with the input. (Driven by the grammar)</li>
+</ul>
+</li>
+<li>CKY parser:<ul>
+<li>bottom-up approach. </li>
+<li>Chomsky normal form. <ul>
+<li>A CFG $G=(N,\Sigma,R,S)$ is in Chomsky Normal Form (CNF) if the rules take one of the following forms:<ul>
+<li>$A \rightarrow BC$, where $A \in N$, $B \in N$, $C \in N$</li>
+<li>$A \rightarrow b$, where $A \in N$, $b \in \Sigma$</li>
+</ul>
+</li>
+<li>Any CFG can be converted to an equivalent grammar in CNF that expresses the same language</li>
+</ul>
+</li>
+<li>Dynamic programming algorithm. (know the algorithm and required data structure: CKY parse table). Split position.<ul>
+<li>data structure: $\pi[i,j]$ be the set of nonterminals that cover $[i,j]$, use “parse table” to represent $\pi[i,j]$</li>
+<li>Split position: To compute $\pi[i,j]$, try all possible split points $k$, such that $i&lt;k&lt;j$. For each $k$, check if the nonterminals in $\pi[i,k]$ and $\pi[k,j]$ match any of the rules in the grammar.</li>
+<li>overall runtime: $O(n^3)$</li>
+</ul>
+</li>
+<li>Backpointers<ul>
+<li>retrieve the parse trees</li>
+<li>store a list of instantiated rules and backpointers</li>
+<li>start at the [0,n] entry and recursively follow the backpointers. Return a set of of subtrees from the recursion.</li>
+<li>retrieve the k highest-scoring trees in polynomial time (PCFGs)</li>
+<li>Retrieving ANY single parse tree takes $O(n^2)$</li>
+</ul>
+</li>
+<li>Parsing with PCFGs<ul>
+<li>assigns a probability to each parse tree to select the most probable parse tree compatible with an input sentence (generative model)</li>
+<li>A PCFG consists of a Context Free Grammar $G=(N,\Sigma,R,S)$ and a probability $P(A\rightarrow \beta)$ for each production $A\rightarrow \beta \in R$ </li>
+<li>The probabilities for all rules with the same left-hand- side sum up to 1</li>
+<li>The probability of a parse tree is $P(t)=\prod_{i=1}^nP(A_i \rightarrow \beta_i)$ &lt;- joint probability</li>
+<li>The probability of a parse tree given the sentence = $P(t)/P(S)$ &lt;- conditional probaiblity</li>
+<li>Estimating PCFG probabilities: MLE $P(A_i \rightarrow \beta_i) = count(A \rightarrow \beta)/count(A)$</li>
+<li>data structure: $\pi[i,j,X]$ be the probability of the highest scoring parse tree for $s[i,j]$ starting in nonterminal $X$</li>
+<li>$\pi[i,j,X]=\max_{k=i+1,…,j-1 X \rightarrow BC \in R}P(X \rightarrow BC) \times \pi[i,k,B] \times \pi[k,j,C]$</li>
+<li>retrieve the highest-scoring trees in polynomial time</li>
+<li>Probability of a sentence:<ul>
+<li>Spurious ambiguity. Need to sum the probabilities of all parse trees for the sentence.</li>
+<li>$\pi[i,j,X]=\sum_{k=i+1,…,j-1 X \rightarrow BC \in R}P(X \rightarrow BC) \times \pi[i,k,B] \times \pi[k,j,C]$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Earley parser:<ul>
+<li>Top-down approach. </li>
+<li>Does not require CNF<ul>
+<li>The Earley parser instead starts at the start symbol and tries to “guess” derivations top-down.</li>
+<li>It discards derivations that are incompatible with the sentence.</li>
+<li>The early parser sweeps through the sentence left-to-right only once. It keeps partial derivations in a table (“chart”).</li>
+</ul>
+</li>
+<li>Parser state definition. Initial state, goal states.<ul>
+<li>State represent hypotheses about constituent structure based on the grammar, taking into account the input (represented as dotted rules with spans).</li>
+</ul>
+</li>
+<li>Three operations: Scan, Predict, Complete<ul>
+<li>Predict: Predict new subtrees top-down. Predict operation can only apply the state we’re currently considering has the dot immediately to the left of an non-terminal symbol.</li>
+<li>Scan: Scan input terminals to verify the prediction.</li>
+<li>Complete: Complete with passive states. And shift the dot.</li>
+</ul>
+</li>
+<li>Dynamic programming algorithm. (know the algorithm and required data structure: parse “Chart” organized by end-position).<ul>
+<li>data structure: Keep track of parser states in a table (“chart”). $Chart[k]$ contains a list of all parser states that end in position $k$.</li>
+<li>shift(state): $A \rightarrow \alpha •s[i] \beta[k,i]$ $\Rightarrow$ $A \rightarrow \alpha s[i] •\beta[k,i+1]$ and add this new state to $Chart[i+1]$</li>
+<li>predict(state): $A \rightarrow \alpha •B \beta[k,i]$ for each rule $B \rightarrow \gamma$, then add a new state $B \rightarrow •\gamma[i,i]$ to $Chart[i]$ </li>
+<li>complete(state): $A \rightarrow \alpha •[k,j]$ for each state $B \rightarrow \beta •A \gamma[i,k]$ add a new state $B \rightarrow \beta A •\gamma[i,j]$ to $Chart[j]$</li>
+<li>overall runtime: $O(n^3)$</li>
+</ul>
+</li>
+<li>Ambiguity<ul>
+<li>Multiple ways to complete the same state. </li>
+<li>Could hash the states so no duplicates are actually added into the chart entries.</li>
+</ul>
+</li>
+<li>Recover parse trees: Keep back-pointers in the parser state objects.</li>
+<li>Make the algorithm work with PCFG: Easy to compute probabilities on Complete. Follow back pointer with max probability.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Dependency-parsing"><a href="#Dependency-parsing" class="headerlink" title="Dependency parsing"></a>Dependency parsing</h1><p>(Not in J&amp;M 2nd ed., <a target="_blank" rel="noopener" href="https://web.stanford.edu/~jurafsky/slp3/14.pdf">J&amp;M 3rd ed. Ch 14.1-14.5</a>, Supplementary material: <a target="_blank" rel="noopener" href="https://courseworks2.columbia.edu/courses/103731/files/7951591/download?wrap=1">Küber, McDonald, and Nivre (2009): Dependency Parsing, Ch.3 to 4.2</a>)</p>
+<ul>
+<li>Goal:<ul>
+<li>Find a set of labeled, directed edges between the nodes, such that the resulting graph forms a correct dependency tree.</li>
+</ul>
+</li>
+<li>Grammar based vs. data based dependency parsing.<ul>
+<li>Grammar based: follow the valid sentence form</li>
+<li>Data based: No valid or invalid sentence concept</li>
+</ul>
+</li>
+<li>Data based approaches: <ul>
+<li>Graph algorithms. vs. transition based  (*) (we did not discuss graph-based approaches)</li>
+</ul>
+</li>
+<li>Transition based dependency parsing: <ul>
+<li>Idea:<ul>
+<li>Start with an initial configuration and find a sequence of transitions to the terminal state.</li>
+<li>Uses a greedy approach to find the best sequence of transitions.<ul>
+<li>Uses a discriminative model (classifier) to select the next transition.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>States (configuration): Stack, Buffer, Partial dependency tree<ul>
+<li>stack: Keep track of nodes that can become dependents of a left-arc</li>
+<li>buffer: Contains words that can become dependents of a right-arc. Keep unseen words.</li>
+</ul>
+</li>
+<li>Transitions (Arc-standard system): Shift, Left-Arc, Right-Arc<ul>
+<li>shift: Move next word from the buffer to the stack</li>
+<li>left-arc: Build an edge from the next word on the buffer to the top word on the stack, and remove the top word on the stack</li>
+<li>right-arc: Build an edge from the top word on the stack to the next word on the buffer, then remove the top word on the buffer and move the top word on the stack to the top of the buffer</li>
+</ul>
+</li>
+<li>Properties of the transition system:<ul>
+<li>The time required to parse $w_1,…, w_m$ with an oracle is $O(m)$</li>
+<li>A node must collect all its children before its parent. As soon as the word has a parent (incoming edge), the word disappears from the both stack and buffer, no longer be able to attach its children.</li>
+<li>Can only produce projective trees. Because it can never create dependencies between substance.</li>
+</ul>
+</li>
+<li>Predicting the next transition using discriminative classifiers. <ul>
+<li>Features should the classifier use: Local features from each state, but ideally want to model entire history of transitions leading to the state.</li>
+<li>Need to define a feature function that maps states to feature vectors.</li>
+<li>Feature definition (address + attribute)<ul>
+<li>an address in the state description: (identifies a specific word in the configuration, for example “top of stack”).</li>
+<li>an attribute of the word in that address: (for example POS, word form, lemma, word embedding, …)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Training the parser from a treebank: <ul>
+<li>Oracle transitions from the annotated dependency tree. Train the model on these transitions.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Arc-eager system (*) (did not discuss this in class)</li>
+</ul>
+<h1 id="Machine-Learning"><a href="#Machine-Learning" class="headerlink" title="Machine Learning"></a>Machine Learning</h1><p>(Some textbook references below)</p>
+<ul>
+<li><p>Generative vs. discriminative algorithms </p>
+</li>
+<li><p>Supervised learning. Classification vs. regression problems, multi-class classification</p>
+<ul>
+<li>Classification：predict a label from a set of labels. Learn a classifier function $h:\mathbb R^d \rightarrow {-1,+1}$</li>
+<li>Regression: predict a numeric value. Learn a regressor function $h:\mathbb R^d \rightarrow \mathbb R$</li>
+</ul>
+</li>
+<li><p>Loss functions: </p>
+<ul>
+<li>Least squares error: $loss(y_i,h(x_i))=(y_i-h(x_i))^2$</li>
+<li>Classification error:  </li>
+</ul>
+<p>$$loss(y_i,h(x_i))= \{ \begin{aligned} 1 \text{,  if  } sign(h(x_i)) \not ={sign(y_i)} \\ 0 \text{,  otherwise } \end{aligned}$$</p>
+</li>
+<li><p>Training vs. testing error. Overfitting and how to prevent it. </p>
+<ul>
+<li>Training aims to minimize training error. We hope that minimizing training error also minimizes test error.</li>
+<li>Minimizing empirical risk can lead to overfitting. This happens when a model works well on the training data, but it does not generalize to testing data.</li>
+<li>Prevent overfitting:<ul>
+<li>Reduce the number of features (feature selection).</li>
+<li>Model selection: Select the simplest one</li>
+<li>Regularization: Adding a term that penalizes complexity if the model to the empirical risk.</li>
+<li>Cross validation: Train on n-1 partitions of original training set</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Linear Models. </p>
+<ul>
+<li>activation function<ul>
+<li>Binary classification mode: $f(x_i)=sign(\bf W • \bf X)$</li>
+</ul>
+</li>
+<li>perceptron learning algorithm: Threshold function is not differentiable.<ul>
+<li>Start with arbitrary hyperplane</li>
+<li>Adjust it using the training data</li>
+<li>Update rule: $w_j \leftarrow w_j + (y-h_w(x)) \times x_j$</li>
+<li>Perceptron Convergence Theorem states that any linear function can be learned using this algorithm in a finite number of iterations. “convergence” means that the weights don’t change for one entire iteration through the training data.</li>
+</ul>
+</li>
+<li>linear separability and the XOR problem. <ul>
+<li>One trick with data that is not linearly separable is to project it into a higher dimensional features base -&gt; which turns into linearly separable</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Feature functions: multi-class decisions</p>
+<ul>
+<li>feature function $\phi (x,y): \mathcal X \times \mathcal Y \rightarrow \mathbb R^d$ d-dimensional vectors.</li>
+<li>In NLP applications, the feature functions are often indicator functions (value is 0 or 1)</li>
+<li>Multiclass Perceptron: predict the one with the highest score $f(x)=\text{argmax} _{y \in Y} \sum_{j=1}^d w_j • \phi_j(x,y)$</li>
+</ul>
+</li>
+<li><p>Log-linear / maximum entropy models  (J&amp;M 3rd. ed. ch. 7, J&amp;M 2nd ed. ch. 6.6)</p>
+<ul>
+<li>Log-likelihood of the model on the training data.<ul>
+<li>Define the conditional probability $P(y|x;w)=\frac{\exp (w • \phi(x,y))}{\sum_{y’ \in Y} \exp (w•\phi(x,y’))}$</li>
+<li>Define the log-likelihood of some model $w$ on the training data: $LL(w)=\sum_{i=1}^n \log P(y_i|x_i;w)$</li>
+<li>compute the maximum likelihood: $LL^*(w)=\text{argmax}<em>w \sum</em>{i=1}^n \log P(y_i|x_i;w)$</li>
+</ul>
+</li>
+<li>Simple gradient ascent.<ul>
+<li>for each $w_j$ in $w$: $w_j \leftarrow w_j + \alpha \frac{\partial}{\partial w_j}LL(w)$</li>
+<li>$\frac{\partial}{\partial w_j}LL(w) = \sum_{i=1}^n \phi_j(x_i,y_i) - \sum_{i=1}^n \sum_{y \in Y} P(y|x_i;w) \phi_j(x_i,y)$</li>
+</ul>
+</li>
+<li>Regularization:<ul>
+<li>Include a regularization term to prevent overfitting. For example L2 regularizer $LL(w)=\sum_{i=1}^n P(y_i|x_i;w)-\frac{\lambda}{2}||w||^2$.</li>
+<li>a trade-off between fit and model ‘complexity’: $\frac{\partial}{\partial w_j}LL(w) = \sum_{i=1}^n \phi_j(x_i,y_i) - \sum_{i=1}^n \sum_{y \in Y} P(y|x_i;w) \phi_j(x_i,y) - \lambda w_j$</li>
+</ul>
+</li>
+<li>MEMM (Maximum entropy markov models): <ul>
+<li>POS tagging with MEMMs<ul>
+<li>Make an independence assumption (similar to HMM) and probability only depends on the previous tag $P(t_1,…,t_n|w_1,…w_n)=\prod_{i=1}^m P(t_i|t_{i-1},w_1,…,w_m)$</li>
+<li>Model each term using a log-linear model $P(t_i|t_{i-1},w_1,…,w_m)=\frac{\exp (w•\phi(w_1,…,w_m,i,t_{i-1},t_i))}{\sum_{t’} \exp (w•\phi(w_1,…,w_m,i,t_{i-1},t’))}$</li>
+<li>Need to find $\text{argmax} P(t_1,…,t_n|w_1,…w_n) = \text{argmax} P(t_1,…,t_n, w_1,…w_n)$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Feed-forward neural nets<br>(J&amp;M 3rd. ed. ch. 8, also take a look at <a target="_blank" rel="noopener" href="https://www.morganclaypool.com/doi/abs/10.2200/S00762ED1V01Y201703HLT037">Yoav Goldberg’s book “Neural Network Methods for Natural Language Processing”</a>)</p>
+<ul>
+<li>Multilayer neural nets (input layer, hidden layer, output layer)<ul>
+<li>Basic idea: represent any (non-linear) function as a composition of soft-threshold functions. This is a form of non-linear regression.</li>
+</ul>
+</li>
+<li>Different <strong>differentiable</strong> activation functions (sigmoid, ReLU, tanh)<ul>
+<li>sigmoid: $g(z)=1/(1+e^{-z})$</li>
+<li>tanh: $tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}$</li>
+<li>ReLU: $ReLu(z)=\max (z,0)$</li>
+</ul>
+</li>
+<li>Softmax<ul>
+<li>Normalize activation of each output unit by the sum of all output activations (as in log-linear models)</li>
+<li>$softmax(z_i)=\frac{\exp (z_i)}{\sum_{j=1}^k \exp(z_j)}$</li>
+</ul>
+</li>
+<li>Backpropagation (*) (know the idea of propagating back partial derivatives of the loss with respect to each weight – I won’t ask tricky questions about backprop).<ul>
+<li>gradient descent to update weights and minimize loss.</li>
+<li>apply the chain rule of calculus</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Two-Approaches-to-Language-Meaning"><a href="#Two-Approaches-to-Language-Meaning" class="headerlink" title="Two Approaches to Language Meaning"></a>Two Approaches to Language Meaning</h1><ul>
+<li>Formal Semantics<ul>
+<li>Use formal Meaning Representations for words /sentences / discourse.</li>
+<li>Based on lexical resources. Dictionary</li>
+<li>History in cognitive science</li>
+</ul>
+</li>
+<li>Distributional / distributed approaches<ul>
+<li>Usage based. Characterize the meaning of words given the context that typically word would appear in.</li>
+<li>Dense Vector representations (embeddings)</li>
+<li>Core concept: Semantic similarity</li>
+</ul>
+</li>
+</ul>
+<h1 id="Formal-Lexical-Semantics"><a href="#Formal-Lexical-Semantics" class="headerlink" title="Formal Lexical Semantics"></a>Formal Lexical Semantics</h1><p>(J&amp;M 3rd ed. ch 17, J&amp;M 2nd ed. ch 19.1-19.3 and 20.1-20.4 )</p>
+<ul>
+<li>Word senses, lexemes, homonymy, polysemy, metonymy, zeugma. <ul>
+<li>Word senses: Different word senses of the same word can denote different (more or less related) concepts</li>
+<li>Lexeme: a pairing of a particular word form with its sense. (bank, river) (bank, finincial institution)</li>
+<li>Homonymy: 同形同音异义(不同意思间不相关) Multiple <strong>unrelated</strong> concepts correspond to the same word form.</li>
+<li>Polysemy: 同形同音异义(不同意思间相关) Multiple semantically <strong>related</strong> concepts correspond to the same word form.</li>
+<li>Metonomy: A subtype of polysemy. One aspect of a concept is used to refer to other aspects of a concept (or the concept itself).<ul>
+<li>ANIMAL &lt;-&gt; MEAT (the chicken was overcooked, the chicken eats a worm)</li>
+</ul>
+</li>
+<li>Zeugma: when a single word is used with two other parts oOf a sentence but must be understood differently (word sense) in relation to each.<ul>
+<li>He <strong>lost</strong> his gloves and his temper.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>WordNet, synsets<ul>
+<li>Wordnet: WordNet is a lexical database containing English word senses and their relations.</li>
+<li>Represents word sense as synsets, sets of lemmas that have synonymous lexemes in one context.</li>
+</ul>
+</li>
+<li>Lexical/Semantic relations (in WordNet)<ul>
+<li>synonym, antonym<ul>
+<li>synonym: Two lexemes refer to the same concept. (<em>synonymy is not a relationship between words, but between lexemes</em>)</li>
+<li>antonym: Senses are opposites with respect to one specific feature of their meaning.</li>
+</ul>
+</li>
+<li>hypernym, hyponym<ul>
+<li>hyponymy: One sense is a hyponym (or subordinate) of another sense if the first sense is more specific, denoting a subclass of the other.</li>
+<li>hypernymy: Inverse relation of hyponymy. (Furniture is a hypernym (or superordinate) of desk.)</li>
+<li><em>The set of things denoted by the hyponym is a subset of the set of things denoted by the hypernym.</em></li>
+</ul>
+</li>
+<li>meronym: A meronym is a part of another concept. (leg is a meronym of chair.)<ul>
+<li>The inverse relation is holonymy. Car is a holonym of wheel.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Word-sense disambiguation: Given a word token in context, identify its correct word sense (from a list of possible word-senses).<ul>
+<li>Supervised learning approach<ul>
+<li>Train a classifier for each word </li>
+<li>Requires hand-labeled training data (sense annotations)</li>
+</ul>
+</li>
+<li>Dictionary-Based Methods:<ul>
+<li>No training data. Instead use a sense dictionary (like WordNet).</li>
+<li>to obtain candidate senses</li>
+<li>to obtain information that allows us to identify which of the candidate senses is correct. </li>
+</ul>
+</li>
+<li>Feature Definition:<ul>
+<li>Collocational features: Take the position of each context word into account.</li>
+<li>Bag-of-word features: Simply keep the set of all context words.</li>
+<li>Using word embeddings</li>
+</ul>
+</li>
+<li>Lesk algorithm (J&amp;M 3rd ed. ch. 17.6)<ul>
+<li>Simplified Lesk Algorithm<ul>
+<li>Use dictionary glosses for each sense.</li>
+<li>Choose the sense that has the highest word <strong>overlap</strong> between gloss and context (ignore function words).</li>
+</ul>
+</li>
+<li>Extensions to Lesk Algorithm<ul>
+<li>Use embedded representations for each word in the definition. Choose the sense with highest average vector similarity to the context.</li>
+<li>“Corpus-Lesk”: Use a sense-tagged-example corpus, add context from <strong>example</strong> sentences.</li>
+<li>Extended Gloss Overlap. Add glosses from related words (hypernyms, meronyms, …)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Lexical substitution task<ul>
+<li>find a substitute for the target word, such that the meaning is preserved.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Distributional-Vector-based-Lexical-Semantics"><a href="#Distributional-Vector-based-Lexical-Semantics" class="headerlink" title="Distributional (Vector-based) Lexical Semantics"></a>Distributional (Vector-based) Lexical Semantics</h1><p>(J&amp;M 3rd ed. ch 15 &amp; 16, not in 2nd ed.)</p>
+<ul>
+<li>Dense Word Representations:<ul>
+<li>Distributional Semantics (“count-based” approaches)<ul>
+<li>Based in linguistic theory (“distributional hypothesis”)</li>
+<li>Context is symbolic, dimensions are interpretable.</li>
+</ul>
+</li>
+<li>Distributed Semantics<ul>
+<li>Based in connectionist approaches.</li>
+<li>Dimensions are not necessarily interpretable</li>
+<li>Application focused</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Distributional hypothesis<ul>
+<li>Two words should be similar if they have similar typical word contexts.</li>
+</ul>
+</li>
+<li>Co-occurence matrix<ul>
+<li>Numbers are co-occurence counts (how often the symbols appear together in context)</li>
+<li>Verb-Object counts</li>
+</ul>
+</li>
+<li>Distance/Similarity metrics (euclidean distance, cosine similarity)<ul>
+<li>Can be seen as coordinates in n-dimensional Euclidean space.</li>
+<li>Similarity: <ul>
+<li>Spatial distance between words. (lower distance = higher similarity)</li>
+<li>Cosine of two words vectors’ angle</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Distributional Semantic Models<ul>
+<li>A Distributional Semantic Model (DSM) is any matrix M such that each row represents the distribution of a term x across contexts, together with a similarity measurement.</li>
+</ul>
+</li>
+<li>Parameters/Dimensions of Distributional Semantic Models<ul>
+<li>Preprocessing, term definition: word form, lemmas, POS, …</li>
+<li>Context definition: <ul>
+<li>Type of context (word, syntactic dependents (with or without relation labels labels), remove stop-words, etc.)</li>
+<li>Size of context window.</li>
+</ul>
+</li>
+<li>Feature scaling / term weighting<ul>
+<li>Not all context terms are equally relevant to characterize the meaning of a word. -&gt; One solution: TF*IDF (term frequency * inverse-document frequency)</li>
+</ul>
+</li>
+<li>Normalization of rows / columns</li>
+<li>Dimensionality reduction</li>
+<li>Similarity measure</li>
+</ul>
+</li>
+<li>Semantic similarity and relatedness (paradigmatic vs. syntagmatic relatedness)<ul>
+<li>Semantic Relatedness (syntagmatic relatedness)<ul>
+<li>Words that occur nearby each other, but are not necessarily similar.</li>
+</ul>
+</li>
+<li>Semantic Similarity (paradigmatic relatedness)<ul>
+<li>Can typically substitute one word for another</li>
+</ul>
+</li>
+<li>Effect of context size on type of relatedness.<ul>
+<li>define distributional context to capture each type of similarity</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Sparse vs. Dense Vectors</li>
+<li>One-hot representation (of words, word-senses, features)</li>
+<li>Word Embeddings<ul>
+<li>Word embeddings are representations of words in a low-dimensional, dense vector space.</li>
+<li>Two approaches:<ul>
+<li>Use matrix decomposition on co-occurence matrix, for example Singular Value Decomposition (SVD)</li>
+<li>Learn distributed embeddings using neural networks. Minimal feature-engineering required.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Word2Vec embeddings using a neural network. (The neural network should capture the relationship between a word and its context)<ul>
+<li>Skip-gram model: Input is a single word. Predict a probability for each context word.</li>
+<li>Continuous bag-of-words (CBOW): Input is a representation of the context window. Predict a probability for each target word.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Recurrent-Neural-Nets"><a href="#Recurrent-Neural-Nets" class="headerlink" title="Recurrent Neural Nets"></a>Recurrent Neural Nets</h1><ul>
+<li>Neural language model (without RNNs)  <ul>
+<li>Use a feed-forward neural network with softmax activation to model the probabilities.<ul>
+<li>learn embeddings and Language Model at the same time</li>
+<li>add a new input layer that is a concatenation of one-hot vectors.</li>
+<li>all context words share a single weight matrix E</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Recurrent neural nets: Many NLP tasks require models of sequences. RNN take entire history into account.<ul>
+<li>Basic RNN concept, hidden layer as state representation.<ul>
+<li>Network computes two functions:<ul>
+<li>R maps input vector x to hidden representation s.</li>
+<li>O maps hidden representation s to output vector y.</li>
+</ul>
+</li>
+<li>Hidden layer represents a state. State representation is fed back into the function R.</li>
+<li>The output at step i depends on all previous steps.</li>
+</ul>
+</li>
+<li>Common usage patterns: <ul>
+<li>Acceptor / Encoder<ul>
+<li>Encoder: RNN used to compute sequence encoding (for example, to compute a sentence representation). This representation is then used in some other task.</li>
+</ul>
+</li>
+<li>Transducer: One output for each input (time step). During training, loss for each time step is combined.<ul>
+<li>Transducer as generator: Typically trained like a regular transducer on the target output in each step. <strong>Previous output is next input</strong>.</li>
+<li>Conditioned transduction (encoder-decoder): Concat contex with each step input.</li>
+<li>Sequence to Sequence: Acceptor + Conditioned transduction</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Backpropagtion through time (BPTT) (*)<ul>
+<li>For each input, treat the unfolded network (copies of all units for each time step) as one big feed-forward network. But with shared weights across time steps.</li>
+<li>During the forward pass, create copies of the RNN unit for each time step, but share the same weight vector.</li>
+</ul>
+</li>
+<li>LSTMs (*) <ul>
+<li>Split state vector into two halfs: “memory cell” c and working memory h.</li>
+<li>“gates” decide:<ul>
+<li>how much of the input to add to the memory </li>
+<li>how much of current memory to forget</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bidirectional RNNs<ul>
+<li>computes two hidden states (forward and backword) for each input.</li>
+</ul>
+</li>
+<li>Stacked/Layered/Deep RNNs</li>
+</ul>
+</li>
+<li>ELMo<ul>
+<li>conventional pre-trained embeddings <em>word2vec</em> do not take context into account and cannot model polysemy</li>
+<li>contextualized word representations: compute word representations as a combination of the stacked layer outputs. (<em>pre-train a stacked biRNN language model</em>)</li>
+<li>model architecture, bi-Language Model training objective</li>
+<li>pre-training and applying ELMo vectors</li>
+</ul>
+</li>
+<li>Encoder/Decoder and Sequence to Sequence<ul>
+<li>Attention mechanism<ul>
+<li>Context vector</li>
+<li>alignment score and attention weights</li>
+<li>attention as a “lookup” operation (queries/keys/values): Attention functions can be described as mapping a query, and a set of key-value pairs to an output.<ul>
+<li>query: $s_{j-1}$ in $score(s_{j-1},h_i)$ - previous hidden state of the decoder</li>
+<li>keys: $h_i$ in $score(s_{j-1},h_i)$ - the input representation of the encoder at time $i$</li>
+<li>values: $h_i$ in $c_j=\sum \alpha_{j,i}h_i$</li>
+<li>$\alpha_{j,i}$ a compatibility score between Query and each Key, select how much the corresponding Value contributes to the output.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Transformer-Based-Models"><a href="#Transformer-Based-Models" class="headerlink" title="Transformer Based Models"></a>Transformer Based Models</h1><p>(not in textbook)</p>
+<ul>
+<li>Problem with the RNNs for MT:<ul>
+<li>Fixed-length encoded representation becomes information bottleneck. </li>
+<li>Not everything in the input sequence is equally important to predict each word in the decoder</li>
+<li>Integrate the idea of “alignments” into the seq2seq approach (Alignments: weight differently for each input words)<ul>
+<li>Each output word corresponds to one (or a few) words in the input.</li>
+<li>Long distance dependencies between input and output.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Attention Mechanism<ul>
+<li>Maintain a sequence of hidden state vectors in the source sequence.</li>
+<li>For each time step during decoding, select which positions in the source sentence contain the most relevant information.</li>
+<li>Compute a different context vector $c_j$ for each target word $y_j$, as a weighted sum representations for the input words.</li>
+<li>Compute alignment weights using softmax of $score(s_{j-1},h_i)$</li>
+<li>Encoder/Decoder/Attention weights trained jointly.</li>
+</ul>
+</li>
+<li>Transformer architecture (contrast to RNNs: a <strong>non-recurrent architecture</strong> for sequence modeling and transduction that is based exclusively on attention.)<ul>
+<li>self attention<ul>
+<li>to compute representations that depend on other representations in the same layer</li>
+</ul>
+</li>
+<li>scaled dot product attention function<ul>
+<li>to compute the $score(q,k)$</li>
+</ul>
+</li>
+<li>multi-head attention<ul>
+<li>Compute h different linear projects of V, K, Q (“attention heads”), compute scaled dot product for each, then concatenate the output.</li>
+</ul>
+</li>
+<li>Encoder layers: Encode the input sequence using a stack of N encoders.</li>
+<li>Decoder layers: Generate one output word at a time, based on the previous outputs and the encoded input.<ul>
+<li>Multi-head self-attention with masked (*): masked to prevent attention to unseen output positions</li>
+</ul>
+</li>
+<li>Positional encoding (*)</li>
+</ul>
+</li>
+<li>How Attention is Used:<ul>
+<li>Self attention:<ul>
+<li>Q, K, and V are all computed from the output representations of the previous layer (using linear transformations).</li>
+</ul>
+</li>
+<li>Encoder/Decoder attention:<ul>
+<li>K, V are computed from the output of the encoder. Q is computed from the output of the previous decoder layer.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Unsupervised Pre-Training<ul>
+<li>Problem: Most NLP tasks depend on annotated training data, which is scarce and expensive to create.</li>
+<li>Idea: Train a model on some unsupervised task (e.g. language modeling) on large amounts of data, and then transfer the model parameters to another task.</li>
+</ul>
+</li>
+<li>GPT (Generative PreTraining)<ul>
+<li>uses transformer decoder layers</li>
+<li>Pre-trained using language modeling objective. </li>
+<li>Application of GPT to classification problems</li>
+<li>Representing various single/two sentence classification problems as input for GPT.</li>
+<li>Fine tuning (weighted secondary objective)<ul>
+<li>helps to keep training the pre-trained transformer weights on the new task during fine-tuning</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>BERT (Bidirectional Encoder Representations from Transformers)<ul>
+<li>uses stacked transformer encoder layers<ul>
+<li>no masked attention, so representations can attend to the entire input sequence</li>
+</ul>
+</li>
+<li>input representation</li>
+<li>significance of the [CLS] token<ul>
+<li>First position is a special classification token [CLS], used to compute a single representation of the input for classification tasks.</li>
+</ul>
+</li>
+<li>masked language model training objective<ul>
+<li>GPT’s LM objective only takes left context into account (masked attention in transformer decoder layers)</li>
+<li>BERT use a “masked language model” objective for pre- training. Allows use of bidirectional self-attention (i.e. transformer encoder layers)</li>
+<li>Randomly replace 15% of the input tokens in each sequence with a [MASK] symbol. </li>
+<li>Max the probability of the actual tokens that were seen in the input sequence for all the masked positions</li>
+</ul>
+</li>
+<li>next sentence prediction training objective as the secondary objective<ul>
+<li>Add a secondary objective (trained jointly with MLM) to obtain representations that depend on the other sentence.</li>
+</ul>
+</li>
+<li>applying BERT to sequence labeling and prediction tasks (and fine tuning)<ul>
+<li>For sequence tasks: Use output representations to make per-token predictions.</li>
+<li>For classification tasks: Use [CLS] representation to make a prediction.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Semantic-Role-Labeling"><a href="#Semantic-Role-Labeling" class="headerlink" title="Semantic Role Labeling"></a>Semantic Role Labeling</h1><p>(J&amp;M Ch. 22)</p>
+<ul>
+<li>Frame Semantics <ul>
+<li>Frame, Frame Elements (specific to each frame)<ul>
+<li>Frame Elements: Frames describe the interaction/relation between a set of frame-specific semantic roles called Frame Elements (FEs)</li>
+<li>i.e.: Donor, Theme, Recipient</li>
+</ul>
+</li>
+<li>Valence Patterns</li>
+<li>FrameNet: (Frame Semantic Parsing)<ul>
+<li>Central interest: mapping from Grammatical Function (Subj, Obj, …) to Frame Elements.</li>
+<li>Frame definitions: A frame represents a situation, object, event providing background needed to understand a word</li>
+<li>Lexical Units: A pair of a word and a frame is called a lexical unit</li>
+<li>Example annotations to illustrate valence patterns.<ul>
+<li>Example annotations illustrate how frame elements are realized linguistically.</li>
+<li>Valence patterns (derived from annotated sentences) specify different ways grammatical roles (subject, object, …) can be mapped to frame elements for a given lexical unit.</li>
+</ul>
+</li>
+<li>Frame-to-frame relations and frame-element relations (*) (you do not need to remember an exhaustive list of these relations). </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PropBank: (Semantic Role Labeling)<ul>
+<li>Differences to FrameNet: only verbs with numbered arguments (semantic roles)</li>
+<li>Semantic Roles (ARGx)<ul>
+<li>Arg0:PROTO-AGENT - Causes an event or change of state in another participant</li>
+<li>Arg1:PROTO-PATIENT - Undergoes change of state. Causally affected by another participant</li>
+<li>Arg2: benefactive, instrument, attribute, or end state</li>
+<li>Arg3: start point, benefactive, instrument, or attribute</li>
+<li>Arg4 the end point</li>
+</ul>
+</li>
+<li>predicate-argument structure.</li>
+<li>framesets<ul>
+<li>Different framesets correspond to different senses</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Semantic Role Labeling:<ul>
+<li>Goal: automatically produce PropBank or FrameNet-style annotations (“frame-semantic parsing”).</li>
+<li>Steps of the general syntax-based approach<ul>
+<li>Parse the sentence (dependence or constituency parse)</li>
+<li>Detect all potential targets (predicates / frame evoking elements)</li>
+<li>For each predicate:<ul>
+<li>For each node in the parse tree use supervised ML classifiers to:<ol>
+<li>identify if it is an argument.</li>
+<li>label the argument with a role.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Features for semantic role role/FE identification and labeling. (*) (you do not need to remember an exhaustive list, but have a general sense of which features are important).<ul>
+<li>Selectional restrictions and preferences. <ul>
+<li>Different semantic roles might have restrictions on the semantic type of arguments they can take.</li>
+<li>Food FE (or ARG1) needs to be edible</li>
+</ul>
+</li>
+<li>Parse-tree path features</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Statistical-MT"><a href="#Statistical-MT" class="headerlink" title="Statistical MT"></a>Statistical MT</h1><p>(J&amp;M 2nd ed. Ch, also see <a target="_blank" rel="noopener" href="http://www.cs.columbia.edu/~mcollins/ibm12.pdf">Michael Collins’ notes on IBM M2</a>)</p>
+<ul>
+<li>Challenges for MT<ul>
+<li>Sentence Word order</li>
+<li>Word order in phrases (adjective modifiers)</li>
+<li>Prepositions and case marking:</li>
+<li>Lexical divergence</li>
+</ul>
+</li>
+<li>Vauquois triangle.</li>
+<li>Faithfulness vs. Fluency<ul>
+<li>Faithfulness: Target sentence should have the same content as the source text.</li>
+<li>Fluency: Target text should be grammatical / natural / fluent in the target language.</li>
+<li>often a trade-off between these two factors.</li>
+</ul>
+</li>
+<li>Parallel Corpora<ul>
+<li>The Rosetta Stone: Identical text written in three scripts (Hieroglyphics, Demotic, and Greek)</li>
+</ul>
+</li>
+<li>Noisy Channel Model for MT<ul>
+<li>Goal: Given an observation in the source language (F), figure out what was said in the target language (E).</li>
+<li>Fluency is modeled by P(E).</li>
+<li>Faithfulness is modeled by P(F|E).</li>
+<li>Apply Baye’s rule: P(E|F) $\propto$ P(E) P(F|E)</li>
+</ul>
+</li>
+<li>Word alignments:<ul>
+<li>First step: Figure out word-to-word translations by aligning words between parallel sentences (bitext) in the corpus.</li>
+</ul>
+</li>
+<li>IBM Model 2: <ul>
+<li>Alignment variables and model definition. <ul>
+<li>Simplifying assumption: alignments are one-to-many, i.e. each f word originates from exactly one e word (not many-to-one, many-to-many, …)</li>
+<li>Use alignment variables $a_1…a_m$ to indicate the position that each word in f is aligned to.</li>
+<li>Mini translation model: $P(F|E)=\sum_A P(F,A|E)$</li>
+<li>Decoding problem: find $\text{argmax}_E P(E)P(F|E)$</li>
+<li>Model the conditional probability: $P(F,A|E)=P(f_1,…,f_m,a_1,…,a_m|e_1,…,e_l,m)$<ul>
+<li>$t(f|e)$ is the probability of generating word f from e.</li>
+<li>$q(j|i,l,m)$ is the probability that alignment variable i takes value j (given sentence length m and l)</li>
+<li>Define the conditional probability for the target sentence and alignments as: $P(f_1,…,f_m,a_1,…,a_m|e_1,…,e_l,m)=\prod_{i=1}^m q(a_i|i,l,m) t(f_i|e_{a_i})$</li>
+<li>Independence assumption: Alignment variables are independent to each other</li>
+</ul>
+</li>
+<li>Computing Alignments:<ul>
+<li>Compute the optimal alignments given a sentence pair: $\text{argmax}_{a_1,…,a_m} P(a_1,…,a_m|f_1,…,f_m,e_1,…,e_l,m)$</li>
+<li>All $a_i$ are independent: $a_i=\text{argmax}_{j \in {0,…,l}} q(j|i,l,m)t(f_i|e_j)$ for $i=1,…,m$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>EM training for Model 2  (*)</li>
+</ul>
+</li>
+<li>Phrase-based MT (*)</li>
+<li>MT Evaluation:<ul>
+<li>BLEU Score </li>
+</ul>
+</li>
+</ul>
+</p></div><div class="pagination"><p class="clearfix"><span>&nbsp;</span><span class="next pagbuttons"><a role="navigation" href="/blog/netflix-subtitles/" title="Load Third-Party Netflix Subtitles">Next post: Load Third-Party Netflix Subtitles&nbsp;<i class="fa fa-angle-double-right"></i></a></span></p></div></div></div></div><div class="visible-xs site-bottom-footer"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div></div><script src="/blog/js/jquery-3.1.0.min.js"></script><script src="/blog/js/bootstrap.min.js"></script><script src="/blog/js/jquery-migrate-1.2.1.min.js"></script><script src="/blog/js/jquery.appear.js"></script><script src="/blog/js/google-analytics.js"></script><script src="/blog/js/typography.js"></script></body></html>

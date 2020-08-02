@@ -6,7 +6,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="https://j-an.org/blog/"/>
-  <updated>2020-08-02T04:35:16.714Z</updated>
+  <updated>2020-08-02T14:44:28.749Z</updated>
   <id>https://j-an.org/blog/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>NLP Topics</title>
+    <link href="https://j-an.org/blog/nlp-topics/"/>
+    <id>https://j-an.org/blog/nlp-topics/</id>
+    <published>2020-08-02T14:00:14.000Z</published>
+    <updated>2020-08-02T14:44:28.749Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Natural language processing is a subfield of linguistics, computer science, information engineering, and artificial intelligence concerned with the interactions between computers and human languages, in particular how to program computers to process and analyze large amounts of natural language data. This article collects a bunch of topics in this area and gives a brief explanation for each of them. The original layout is provided by Prof. Daniel Bauer in his NLP class. I editied it and tried to enrich the content for further study use.
+    
+    </summary>
+    
+    
+    
+      <category term="ML" scheme="https://j-an.org/blog/tags/ML/"/>
+    
+      <category term="NLP" scheme="https://j-an.org/blog/tags/NLP/"/>
+    
+  </entry>
   
   <entry>
     <title>Load Third-Party Netflix Subtitles</title>
@@ -40,7 +61,7 @@
     <link href="https://j-an.org/blog/hello-world/"/>
     <id>https://j-an.org/blog/hello-world/</id>
     <published>2020-08-02T04:00:00.000Z</published>
-    <updated>2020-08-02T04:35:59.818Z</updated>
+    <updated>2020-08-02T15:25:17.778Z</updated>
     
     <summary type="html">
     

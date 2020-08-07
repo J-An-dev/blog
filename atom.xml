@@ -6,7 +6,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="https://j-an.org/blog/"/>
-  <updated>2020-08-02T14:44:28.749Z</updated>
+  <updated>2020-08-07T13:16:28.030Z</updated>
   <id>https://j-an.org/blog/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Signal 下载</title>
+    <link href="https://j-an.org/blog/signal/"/>
+    <id>https://j-an.org/blog/signal/</id>
+    <published>2020-08-07T13:14:53.000Z</published>
+    <updated>2020-08-07T13:16:28.030Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Signal 安卓版下载
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>NLP Topics</title>

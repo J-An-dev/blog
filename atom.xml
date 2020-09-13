@@ -6,7 +6,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="https://j-an.org/blog/"/>
-  <updated>2020-08-02T14:44:28.749Z</updated>
+  <updated>2020-09-13T17:34:17.050Z</updated>
   <id>https://j-an.org/blog/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Decode the Secrets Behind Recommender Systems</title>
+    <link href="https://j-an.org/blog/matrix-factorization/"/>
+    <id>https://j-an.org/blog/matrix-factorization/</id>
+    <published>2020-09-13T16:11:58.000Z</published>
+    <updated>2020-09-13T17:34:17.050Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;This is a blog about the secrets behind one kind of recommender systems that using the Matrix Factorization technique to generate new data based on the user behaivor data already provided. A typical use scenario is recommending new movies or shows that the user haven’t watched but may like according to the movies or shows the user already rated. This blog will go thorugh the theory behind this technique and several interesting use cases are also provided.&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ML" scheme="https://j-an.org/blog/tags/ML/"/>
+    
+  </entry>
   
   <entry>
     <title>NLP Topics</title>

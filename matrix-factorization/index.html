@@ -1,0 +1,606 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>Decode the Secrets Behind Recommender Systems · J. An's Blog</title><meta name="description" content="This is a blog about the secrets behind one kind of recommender systems that using the Matrix Factorization technique to generate new data based on th"><meta name="keywords" content=""><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/blog/css/bootstrap.min.css"><link rel="stylesheet" href="/blog/css/font-awesome.min.css"><link rel="stylesheet" href="/blog/css/style.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        }
+    })
+
+</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML" async></script><meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/blog/css/prism-base16-ateliersulphurpool.light.css" type="text/css">
+<link rel="stylesheet" href="/blog/css/prism-line-numbers.css" type="text/css"></head><body><div id="stage" class="container"><div class="row"><div id="side-bar" class="col-sm-3 col-xs-12 side-container invisible"><div class="vertical-text site-title"><h3 tabindex="-1" class="site-title-small"><a href="/blog/" class="a-title"></a></h3><h1 tabindex="-1" class="site-title-large"><a href="/blog/" class="a-title">J. An's Blog</a></h1><!--h6(onclick="triggerSiteNav()") Trigger--></div><br class="visible-lg visible-md visible-sm"><div id="site-nav" class="site-title-links"><ul><li><a href="/blog/">Home</a></li><li><a href="/blog/archives">Archive</a></li><li><a href="/blog/tags">Tags</a></li><li class="soc"><a href="https://github.com/j-an-dev" target="_blank" rel="noopener noreferrer"><i class="fa fa-github">&nbsp;</i></a><a href="https://twitter.com/anjie_tweet" target="_blank" rel="noopener noreferrer"><i class="fa fa-twitter">&nbsp;</i></a><a href="https://www.instagram.com/aj_ins" target="_blank" rel="noopener noreferrer"><i class="fa fa-instagram">&nbsp;</i></a></li></ul><div class="visible-lg visible-md visible-sm site-nav-footer"><br class="site-nav-footer-br"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div><div id="main-container" class="col-sm-9 col-xs-12 main-container invisible"><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post-container"><p class="post-title"><a>Decode the Secrets Behind Recommender Systems</a></p><p class="post-meta"><span class="date meta-item">Posted on&nbsp;2020-09-13</span><span class="meta-item"><i class="fa fa-tag"></i><span>&nbsp;</span><a href="/blog/tags/ML/" title="ML" class="a-tag">ML</a><span>&nbsp;</span></span></p><p class="post-abstract"><p>This is a blog about the secrets behind one kind of recommender systems that using the Matrix Factorization technique to generate new data based on the user behaivor data already provided. A typical use scenario is recommending new movies or shows that the user haven’t watched but may like according to the movies or shows the user already rated. This blog will go thorugh the theory behind this technique and several interesting use cases are also provided.</p>
+<a id="more"></a>
+
+<br>
+
+<h1 id="Matrix-Factorization-and-Completion"><a href="#Matrix-Factorization-and-Completion" class="headerlink" title="Matrix Factorization and Completion"></a>Matrix Factorization and Completion</h1><h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction:"></a>1. Introduction:</h2><p>Matching consumers to products is an important practical problem. Recommender systems use consumers feedback about subsets of products to help recommend new things to customers that they may like.</p>
+<p>Two strategies for object recommendation:</p>
+<ul>
+<li>Content filtering: Use known information about the products and users to characterize its nature and make recommendations (required a lot of information difficult and expensive to collect)</li>
+<li><strong>Collaborative filtering</strong>: Use users’ past behavior (ratings) information to make future recommendations without requiring the creation of explicit profiles<ul>
+<li>Neighborhood Methods: compute the relationships between users (similarity score)</li>
+<li>Latent Factor Models: characterize both products and users with factors inferred from the ratings patterns</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-1-Netflix-Prize"><a href="#1-1-Netflix-Prize" class="headerlink" title="1.1. Netflix Prize"></a>1.1. Netflix Prize</h3><p>In 2006, Netflix announced the Netflix Prize, a competition to predict movie ratings on a 5-star scale. Netflix conducted this competition to find new ways to improve its recommendations. And used the root mean squared error (RMSE) between the predicted and actual rating to evaluate and quantify.</p>
+<p>Team BellKor took over the top spot in the competition in the summer of 2007, and won the 2007 Progress Prize with the best score at the time: 8.43 percent better than Netflix. The method they introduced was a realization of latent factor models based on <strong>Matrix Factorization</strong>.</p>
+<h3 id="1-2-Matrix-Factorization"><a href="#1-2-Matrix-Factorization" class="headerlink" title="1.2. Matrix Factorization"></a>1.2. Matrix Factorization</h3><p>Matrix factorization is the breaking down of one matrix into a product of multiple matrices. There are many different ways to factor matrices, but singular value decomposition (SVD) is particularly useful for making recommendations.</p>
+<h3 id="1-3-Matirx-Completion"><a href="#1-3-Matirx-Completion" class="headerlink" title="1.3. Matirx Completion"></a>1.3. Matirx Completion</h3><p>Borrow some notations and pictures from textbook <em>Chapter 4.1 Motivating Examples of Low-Rank Modeling</em>:<br><img src="/blog/matrix-factorization/textbook.png"></p>
+<p>Given a rating matrix $M$ with $N_1$ users and $N_2$ objects that contains every user/object pair. Users rate objects based on the quality of their experience. It is clear that it will have many missing values. We wish to predict users ratings of items that they have not yet rated. <strong>GOAL: fill in the missing entries of $M$</strong>.<br><img src="/blog/matrix-factorization/generative.png"><br>Matrix $M$ here is a low-rank matrix:</p>
+<ul>
+<li>Many columns should look similar. Two movies may have correlated ratings.</li>
+<li>$N_1$-dimensional columns don’t fill up $\mathbb{R}^{N_1}$, where $d \ll min{N_1, N_2}$ is the latent factors</li>
+<li>Matrix $M$ has fewer “degrees of freedom”</li>
+</ul>
+<p><strong>A low-rank restriction gives hope for filling in missing data because is models correlations.</strong><br><br></p>
+<h2 id="2-Technical-Approach"><a href="#2-Technical-Approach" class="headerlink" title="2. Technical Approach:"></a>2. Technical Approach:</h2><h3 id="2-1-Matrix-Factorization-via-SVD"><a href="#2-1-Matrix-Factorization-via-SVD" class="headerlink" title="2.1. Matrix Factorization via SVD"></a>2.1. Matrix Factorization via SVD</h3><p>SVD is an algorithm that decomposes a matrix $M$ into the best lower rank (i.e. smaller/simpler) approximation of the original matrix $M$. Mathematically, it decomposes $M$ into two unitary matrices and a diagonal matrix:<br>$$M = U \Sigma V^T$$<br>where $M$ is rating matrix, $U$ is the user “features” matrix, $\Sigma$ is the diagonal matrix of singular values, and $V^T$ is the object “features” matrix. $U$ and $V^T$ are orthogonal with $U^T U = I$, $V^TV = I$ and $\Sigma$ is diagonal with $\Sigma_{ii} \geq 0$.</p>
+<h3 id="2-2-Learning-Algorithm"><a href="#2-2-Learning-Algorithm" class="headerlink" title="2.2. Learning Algorithm"></a>2.2. Learning Algorithm</h3><p>Set $\Omega$ contains the pair $(i,j)$ that are observed, then $\Omega = { (i,j): M_{ij} \text{ is measured} }$. So $(i,j) \in \Omega$ is user $i$ rated object $j$.</p>
+<p>Let $M_0$ be the part of $M$ that is observed and $M_m$ the missing part. Then the joint likelihood<br>$$p(M_0|U,V) = \int p(M_0, M_m|U,V)dM_m$$<br>can be factorized as:<br>$$p(M_0, U, V) = [\prod_{(i,j) \in \Omega} p(M_{ij}|u_i,v_j)] \times [\prod_{i=1}^{N_1} p(u_i)][\prod_{j=1}^{N_2} p(v_j)]$$<br>The maximum a posteriori (MAP) solution for $U$ and $V$ is the maximum of the log joint likelihood:<br>$$U_{MAP}, V_{MAP} = \arg \max_{U,V} \sum_{(i,j) \in \Omega} \ln p(M_{ij}|u_i, v_j) + \sum_{i=1}^{N_1} \ln p(u_i) + \sum_{j=1}^{N_2} \ln p(v_j)$$<br>Then we want to maximize the MAP objective function $\mathcal{L}$:<br>$$\mathcal{L} = - \sum_{(i,j) \in \Omega} \frac{1}{2\sigma^2}||M_{ij} - u_i^Tv_j||^2 - \sum_{i=1}^{N_1}\frac{\lambda}{2}||u_i||^2 - \sum_{j=1}^{N_2}\frac{\lambda}{2}||v_j||^2 + \text{constant}$$<br>To update each $u_i$ and $vCa_j$, take the derivative of $\mathcal{L}$ and set to zero:</p>
+<p>$$\bigtriangledown_{u_i} \mathcal{L} = \sum_{j\in\Omega_{u_i}} \frac{1}{\sigma^2} (M_{ij} - u_i^Tv_j)v_j - \lambda u_i = 0$$</p>
+<p>$$\bigtriangledown_{v_j} \mathcal{L} = \sum_{i\in\Omega_{v_j}} \frac{1}{\sigma^2} (M_{ij} - v_j^Tu_i)u_i - \lambda v_j = 0$$</p>
+<p>Then, we can solve for each $u_i$ and $v_j$ individually:<br>$$u_i = (\lambda \sigma^2 I + \sum_{j \in \Omega_{u_i}}v_jv_j^T)^{-1} (\sum_{j \in \Omega_{u_i}} M_{ij}v_j)$$<br>$$v_j = (\lambda \sigma^2 I + \sum_{i \in \Omega_{v_j}}u_iu_i^T)^{-1} (\sum_{i \in \Omega_{v_j}} M_{ij}u_i)$$<br>We cannot solve for all $u_i$ and $v_j$ at once to find the MAP solution. So we use a coordinate ascet algorithm in several iterations to update.</p>
+<h3 id="2-3-MAP-inference-coordinate-ascent-algorithm"><a href="#2-3-MAP-inference-coordinate-ascent-algorithm" class="headerlink" title="2.3. MAP inference coordinate ascent algorithm"></a>2.3. MAP inference coordinate ascent algorithm</h3><ul>
+<li>Input: An incomplete rating matrix $M$, set $\Omega$, rank $d$</li>
+<li>Output: $N_1$ user locations $u_i \in \mathbb{R}^d$, and $N_2$ object locations, $v_j \in \mathbb{R}^d$</li>
+<li>Initialization: $u_i \text{ as } N(0,\lambda^{-1}I)$, $v_j \text{ as } N(0,\lambda^{-1}I)$</li>
+</ul>
+<p><strong>for</strong> each interation <strong>do</strong></p>
+<ul>
+<li><strong>for</strong> $i=1,…,N_1$ <strong>update user location</strong><br>$$u_i = (\lambda \sigma^2 I + \sum_{j \in \Omega_{u_i}}v_jv_j^T)^{-1} (\sum_{j \in \Omega_{u_i}} M_{ij}v_j)$$</li>
+<li><strong>for</strong> $j=1,…,N_2$ <strong>update object location</strong><br>$$v_j = (\lambda \sigma^2 I + \sum_{i \in \Omega_{v_j}}u_iu_i^T)^{-1} (\sum_{i \in \Omega_{v_j}} M_{ij}u_i)$$</li>
+</ul>
+<h2 id="3-Experiments"><a href="#3-Experiments" class="headerlink" title="3. Experiments:"></a>3. Experiments:</h2><h3 id="3-1-Data-set-MovieLens-simplified"><a href="#3-1-Data-set-MovieLens-simplified" class="headerlink" title="3.1. Data set: MovieLens (simplified)"></a>3.1. Data set: MovieLens (simplified)</h3><p>This data set consists of:</p>
+<ul>
+<li>100,000 ratings (1-5) from 943 users on 1682 movies. </li>
+<li>Each user has rated at least 20 movies. </li>
+<li>Already de-mean the data (normalize by each users ratings mean).</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">from</span> numpy<span class="token punctuation">.</span>linalg <span class="token keyword">import</span> inv
+<span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> seaborn <span class="token keyword">as</span> sns
+
+<span class="token comment" spellcheck="true"># Input training and testing set</span>
+rating_train <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">'./dataset/ratings_train.csv'</span><span class="token punctuation">,</span> header<span class="token operator">=</span>None<span class="token punctuation">)</span> 
+movie <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">'./dataset/movies.txt'</span><span class="token punctuation">,</span>sep<span class="token operator">=</span><span class="token string">"\n"</span><span class="token punctuation">,</span> header<span class="token operator">=</span>None<span class="token punctuation">)</span>
+rating_train<span class="token punctuation">.</span>columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'user_id'</span><span class="token punctuation">,</span><span class="token string">'movie_id'</span><span class="token punctuation">,</span><span class="token string">'rating'</span><span class="token punctuation">]</span>
+rating_test <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">'./dataset/ratings_test.csv'</span><span class="token punctuation">,</span> header<span class="token operator">=</span>None<span class="token punctuation">)</span>
+rating_test<span class="token punctuation">.</span>columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'user_id'</span><span class="token punctuation">,</span><span class="token string">'movie_id'</span><span class="token punctuation">,</span><span class="token string">'rating'</span><span class="token punctuation">]</span>
+
+index <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>len<span class="token punctuation">(</span>movie<span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+movie <span class="token operator">=</span> pd<span class="token punctuation">.</span>concat<span class="token punctuation">(</span><span class="token punctuation">[</span>index<span class="token punctuation">,</span> movie<span class="token punctuation">]</span><span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> sort<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+movie<span class="token punctuation">.</span>columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'movie_id'</span><span class="token punctuation">,</span><span class="token string">'movie_name'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-2-Construct-matrix-M-and-test-matrix"><a href="#3-2-Construct-matrix-M-and-test-matrix" class="headerlink" title="3.2. Construct matrix M and test matrix"></a>3.2. Construct matrix M and test matrix</h3><pre class="line-numbers language-python"><code class="language-python">M <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span>len<span class="token punctuation">(</span>rating_train<span class="token punctuation">[</span><span class="token string">'user_id'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>unique<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> len<span class="token punctuation">(</span>movie<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> rating_train<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    row <span class="token operator">=</span> rating_train<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>i<span class="token punctuation">,</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    M<span class="token punctuation">[</span>int<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> int<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> row<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>
+
+M_test <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span>len<span class="token punctuation">(</span>rating_train<span class="token punctuation">[</span><span class="token string">'user_id'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>unique<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> len<span class="token punctuation">(</span>movie<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> rating_test<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    row <span class="token operator">=</span> rating_test<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>i<span class="token punctuation">,</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    M_test<span class="token punctuation">[</span>int<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> int<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> row<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># visualization for training matrix</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">21</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ax <span class="token operator">=</span> sns<span class="token punctuation">.</span>heatmap<span class="token punctuation">(</span>
+    M<span class="token punctuation">,</span> 
+    center<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>
+    cmap<span class="token operator">=</span>sns<span class="token punctuation">.</span>diverging_palette<span class="token punctuation">(</span><span class="token number">250</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> sep<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> as_cmap<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    square<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'Matrix M for training'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">'moive_id'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/blog/matrix-factorization/ja3375_code_7_0.png" alt="png"></p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># visualization for testing matrix</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">21</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ax <span class="token operator">=</span> sns<span class="token punctuation">.</span>heatmap<span class="token punctuation">(</span>
+    M_test<span class="token punctuation">,</span> 
+    center<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>
+    cmap<span class="token operator">=</span>sns<span class="token punctuation">.</span>diverging_palette<span class="token punctuation">(</span><span class="token number">250</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> sep<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> as_cmap<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    square<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'Matrix M for testing'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">'moive_id'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/blog/matrix-factorization/ja3375_code_8_0.png" alt="png"></p>
+<h3 id="3-3-Implement-MAP-inference-coordinate-ascent-algorithm"><a href="#3-3-Implement-MAP-inference-coordinate-ascent-algorithm" class="headerlink" title="3.3. Implement MAP inference coordinate ascent algorithm"></a>3.3. Implement MAP inference coordinate ascent algorithm</h3><pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># Implement MAP inference coordinate ascent algorithm</span>
+<span class="token keyword">def</span> <span class="token function">matrix_factorization</span><span class="token punctuation">(</span>M<span class="token punctuation">,</span> cov<span class="token punctuation">,</span> d<span class="token punctuation">,</span> lambda_<span class="token punctuation">,</span> num_iteration<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Return loss fuction and matrix factorization result u, v after num_iterations iteraions
+
+    :param M: matrix dataset
+    :param cov: initial cov (sigma_squared)
+    :param d: rank
+    :param lambda_: lambda
+    :param num_iteration: number of iterations
+    """</span>
+
+    <span class="token comment" spellcheck="true">#initialize   </span>
+    v <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>multivariate_normal<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">*</span>M<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> np<span class="token punctuation">.</span>identity<span class="token punctuation">(</span>M<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> size <span class="token operator">=</span> d<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#shape(10,1682)</span>
+    u <span class="token operator">=</span> np<span class="token punctuation">.</span>repeat<span class="token punctuation">(</span>np<span class="token punctuation">.</span>NaN<span class="token punctuation">,</span>M<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">*</span>d<span class="token punctuation">)</span><span class="token punctuation">.</span>reshape<span class="token punctuation">(</span>M<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> d<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#shape (943,10)</span>
+
+    objective_func <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">for</span> iteration <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>num_iteration<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true">#update u</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>M<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token comment" spellcheck="true">#select step: use select matrix to only keep vj that has ui</span>
+            select_matrix <span class="token operator">=</span> abs<span class="token punctuation">(</span>np<span class="token punctuation">.</span>sign<span class="token punctuation">(</span>M<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#(1682,)</span>
+            v_as <span class="token operator">=</span> np<span class="token punctuation">.</span>multiply<span class="token punctuation">(</span>select_matrix<span class="token punctuation">,</span>v<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#v_after_select, shape: 10*1682</span>
+            temp <span class="token operator">=</span> inv<span class="token punctuation">(</span>np<span class="token punctuation">.</span>identity<span class="token punctuation">(</span>d<span class="token punctuation">)</span><span class="token operator">*</span>cov <span class="token operator">+</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>v_as<span class="token punctuation">,</span>v_as<span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#10*10</span>
+            Mv <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>M<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>reshape<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>v<span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#Mv term</span>
+            result <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>Mv<span class="token punctuation">,</span> temp<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#1*10, need to insert to u(943*10)</span>
+            u<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> result <span class="token comment" spellcheck="true">#update u row by row</span>
+
+        <span class="token comment" spellcheck="true">#update v        </span>
+        <span class="token keyword">for</span> j <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>M<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token comment" spellcheck="true">#select step: use select matrix to only keep ui that has vj</span>
+            select_matrix2 <span class="token operator">=</span> abs<span class="token punctuation">(</span>np<span class="token punctuation">.</span>sign<span class="token punctuation">(</span>M<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#data[:,j]: shape(943,)</span>
+            u_as <span class="token operator">=</span> np<span class="token punctuation">.</span>multiply<span class="token punctuation">(</span>select_matrix2<span class="token punctuation">,</span> u<span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#u after select 10*943</span>
+            temp2 <span class="token operator">=</span> inv<span class="token punctuation">(</span>np<span class="token punctuation">.</span>identity<span class="token punctuation">(</span>d<span class="token punctuation">)</span><span class="token operator">*</span>cov <span class="token operator">+</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>u_as<span class="token punctuation">,</span>u_as<span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#10*10</span>
+            Mu <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>M<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span>j<span class="token punctuation">]</span><span class="token punctuation">.</span>reshape<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>u<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#1*10</span>
+            result2 <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>Mu<span class="token punctuation">,</span>temp2<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#1*10          </span>
+            v<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> result2 <span class="token comment" spellcheck="true">#update v column by column</span>
+
+        <span class="token comment" spellcheck="true">#loss function</span>
+        u_loss <span class="token operator">=</span> np<span class="token punctuation">.</span>sum<span class="token punctuation">(</span>lambda_<span class="token operator">/</span><span class="token number">2</span><span class="token operator">*</span>np<span class="token punctuation">.</span>square<span class="token punctuation">(</span>u<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        v_loss <span class="token operator">=</span> np<span class="token punctuation">.</span>sum<span class="token punctuation">(</span>lambda_<span class="token operator">/</span><span class="token number">2</span><span class="token operator">*</span>np<span class="token punctuation">.</span>square<span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        select_matrix3 <span class="token operator">=</span> abs<span class="token punctuation">(</span>np<span class="token punctuation">.</span>sign<span class="token punctuation">(</span>M<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        pred <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>u<span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+        subtract <span class="token operator">=</span> np<span class="token punctuation">.</span>multiply<span class="token punctuation">(</span>M <span class="token operator">-</span> pred<span class="token punctuation">,</span> select_matrix3<span class="token punctuation">)</span>
+        subtract_norm <span class="token operator">=</span> np<span class="token punctuation">.</span>sum<span class="token punctuation">(</span>np<span class="token punctuation">.</span>square<span class="token punctuation">(</span>subtract<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token operator">*</span>cov<span class="token punctuation">)</span>
+
+        L <span class="token operator">=</span> <span class="token operator">-</span>subtract_norm <span class="token operator">-</span> u_loss <span class="token operator">-</span> v_loss
+        objective_func<span class="token punctuation">.</span>append<span class="token punctuation">(</span>L<span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> objective_func<span class="token punctuation">,</span> u<span class="token punctuation">,</span> v  <span class="token comment" spellcheck="true">#u:(943,10); v:(10,1682)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">run_matrix_factorization_ntimes</span><span class="token punctuation">(</span>M<span class="token punctuation">,</span> n_times<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Run matrix factorization algorithm n_times times.
+
+    """</span>
+    obj_result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    u_result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    v_result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> interation <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> n_times<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        obj_one<span class="token punctuation">,</span> u_one<span class="token punctuation">,</span> v_one <span class="token operator">=</span> matrix_factorization<span class="token punctuation">(</span>M<span class="token punctuation">,</span> <span class="token number">0.25</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span>
+        obj_result<span class="token punctuation">.</span>append<span class="token punctuation">(</span>obj_one<span class="token punctuation">)</span>
+        u_result<span class="token punctuation">.</span>append<span class="token punctuation">(</span>u_one<span class="token punctuation">)</span>
+        v_result<span class="token punctuation">.</span>append<span class="token punctuation">(</span>v_one<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> obj_result<span class="token punctuation">,</span> u_result<span class="token punctuation">,</span> v_result<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-4-Define-RMSE-for-evaluation"><a href="#3-4-Define-RMSE-for-evaluation" class="headerlink" title="3.4. Define RMSE for evaluation"></a>3.4. Define RMSE for evaluation</h3><pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">RMSE</span><span class="token punctuation">(</span>pred<span class="token punctuation">,</span> truth<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Return RMSE between the prediction results (obtained by matrix factorization) and ground truth
+
+    """</span>
+    subtract <span class="token operator">=</span> np<span class="token punctuation">.</span>multiply<span class="token punctuation">(</span>truth <span class="token operator">-</span> pred<span class="token punctuation">,</span> abs<span class="token punctuation">(</span>np<span class="token punctuation">.</span>sign<span class="token punctuation">(</span>truth<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    N <span class="token operator">=</span> np<span class="token punctuation">.</span>sum<span class="token punctuation">(</span>abs<span class="token punctuation">(</span>np<span class="token punctuation">.</span>sign<span class="token punctuation">(</span>truth<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    RMSE <span class="token operator">=</span> np<span class="token punctuation">.</span>sqrt<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">/</span>N<span class="token operator">*</span>np<span class="token punctuation">.</span>sum<span class="token punctuation">(</span>np<span class="token punctuation">.</span>square<span class="token punctuation">(</span>subtract<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> RMSE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-5-Log-joint-likelihood-for-10-runs"><a href="#3-5-Log-joint-likelihood-for-10-runs" class="headerlink" title="3.5. Log joint likelihood for 10 runs"></a>3.5. Log joint likelihood for 10 runs</h3><pre class="line-numbers language-python"><code class="language-python">obj_result<span class="token punctuation">,</span> u_result<span class="token punctuation">,</span> v_result <span class="token operator">=</span> run_matrix_factorization_ntimes<span class="token punctuation">(</span>M<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+i <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">for</span> item <span class="token keyword">in</span> obj_result<span class="token punctuation">:</span>
+    plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">101</span><span class="token punctuation">)</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> label <span class="token operator">=</span> <span class="token string">'run_'</span><span class="token operator">+</span>str<span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>legend<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">'Iterations'</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'Log joint likelihood'</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'Log joint likelihood by iterations for 10 runs'</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>xticks<span class="token punctuation">(</span><span class="token punctuation">[</span>int<span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    i <span class="token operator">+=</span> <span class="token number">1</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<style>
+    .center{
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<img src="/blog/matrix-factorization/ja3375_code_15_0.png" class="center">
+
+
+<h3 id="3-6-RMSE-for-each-run-and-pick-the-best-run-for-prediction"><a href="#3-6-RMSE-for-each-run-and-pick-the-best-run-for-prediction" class="headerlink" title="3.6. RMSE for each run and pick the best run for prediction"></a>3.6. RMSE for each run and pick the best run for prediction</h3><pre class="line-numbers language-python"><code class="language-python">RMSE_result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> 
+<span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">(</span>u_result<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    u <span class="token operator">=</span> u_result<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    v <span class="token operator">=</span> v_result<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    pred_result <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>u<span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+    rmse <span class="token operator">=</span> RMSE<span class="token punctuation">(</span>pred_result<span class="token punctuation">,</span> M_test<span class="token punctuation">)</span>
+    RMSE_result<span class="token punctuation">.</span>append<span class="token punctuation">(</span>rmse<span class="token punctuation">)</span>
+
+obj_final <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">(</span>obj_result<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    obj_final<span class="token punctuation">.</span>append<span class="token punctuation">(</span>obj_result<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+d <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;'run': np.arange(1,11),'final value of obj':obj_final,'RMSE':RMSE_result&amp;#125;</span>
+df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>d<span class="token punctuation">)</span>
+df<span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span>by<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'final value of obj'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>ascending<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<div>
+<style>
+    .dataframe {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    table {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+    }
+    td, th {
+                border: 1px solid black;
+                padding: 5px;
+                text-align: center;
+            }
+</style>
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>run</th>
+      <th>final value of obj</th>
+      <th>RMSE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>2</td>
+      <td>-90725.489855</td>
+      <td>1.115077</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>10</td>
+      <td>-90902.895882</td>
+      <td>1.111587</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>-90972.762885</td>
+      <td>1.093415</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>8</td>
+      <td>-91014.111316</td>
+      <td>1.111624</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>7</td>
+      <td>-91134.543574</td>
+      <td>1.128258</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>9</td>
+      <td>-91136.570353</td>
+      <td>1.093788</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>6</td>
+      <td>-91214.313817</td>
+      <td>1.108230</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>5</td>
+      <td>-91312.961398</td>
+      <td>1.116357</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>3</td>
+      <td>-91315.854626</td>
+      <td>1.125137</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>4</td>
+      <td>-91359.263814</td>
+      <td>1.107143</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<pre class="line-numbers language-python"><code class="language-python">best_run_index <span class="token operator">=</span> df<span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span>by<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'final value of obj'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>ascending<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'run'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>index<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+best_u <span class="token operator">=</span> u_result<span class="token punctuation">[</span>best_run_index<span class="token punctuation">]</span>
+best_v <span class="token operator">=</span> v_result<span class="token punctuation">[</span>best_run_index<span class="token punctuation">]</span>
+M_pred <span class="token operator">=</span> np<span class="token punctuation">.</span>matmul<span class="token punctuation">(</span>best_u<span class="token punctuation">,</span> best_v<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># visualization for predicting matrix</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">21</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ax <span class="token operator">=</span> sns<span class="token punctuation">.</span>heatmap<span class="token punctuation">(</span>
+    M_pred<span class="token punctuation">,</span> 
+    center<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>
+    cmap<span class="token operator">=</span>sns<span class="token punctuation">.</span>diverging_palette<span class="token punctuation">(</span><span class="token number">250</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> sep<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> as_cmap<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    square<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'Matrix M for predicting'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">'moive_id'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/blog/matrix-factorization/ja3375_code_19_0.png" alt="png"></p>
+<h3 id="3-7-Play-around-with-the-prediction"><a href="#3-7-Play-around-with-the-prediction" class="headerlink" title="3.7. Play around with the prediction"></a>3.7. Play around with the prediction</h3><h4 id="3-7-1-Find-the-similar-movies-for-a-given-one-i-e-Toy-Story"><a href="#3-7-1-Find-the-similar-movies-for-a-given-one-i-e-Toy-Story" class="headerlink" title="3.7.1. Find the similar movies for a given one (i.e., Toy Story)"></a>3.7.1. Find the similar movies for a given one (i.e., Toy Story)</h4><img src="/blog/matrix-factorization/choose3.png" width=800/>
+According to Euclidean Distance using their respective locations $v_j$
+
+
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">closet_movie</span><span class="token punctuation">(</span>movie_id<span class="token punctuation">,</span> best_v<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    best_v_T <span class="token operator">=</span> best_v<span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    select_movie <span class="token operator">=</span> best_v_T<span class="token punctuation">[</span>movie_id<span class="token number">-1</span><span class="token punctuation">]</span>
+
+    <span class="token comment" spellcheck="true"># use dist_acc to store distance</span>
+    dist_acc <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> each_movie <span class="token keyword">in</span> best_v_T<span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># best_v_T.shape[0]=1682</span>
+        eclu_dist <span class="token operator">=</span> np<span class="token punctuation">.</span>sqrt<span class="token punctuation">(</span>np<span class="token punctuation">.</span>sum<span class="token punctuation">(</span>np<span class="token punctuation">.</span>square<span class="token punctuation">(</span>select_movie <span class="token operator">-</span> each_movie<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Euclidean distance</span>
+        dist_acc<span class="token punctuation">.</span>append<span class="token punctuation">(</span>eclu_dist<span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true"># store result as a dictionary</span>
+    d <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;'movie_id':np.arange(1,1683).tolist(),'distance': dist_acc&amp;#125;</span>
+    <span class="token keyword">return</span> d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-python"><code class="language-python">d_toystory <span class="token operator">=</span> closet_movie<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> best_v<span class="token punctuation">)</span>
+d_toystory_closet <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>d_toystory<span class="token punctuation">)</span><span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span>by<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'distance'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>head<span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span>
+d_result <span class="token operator">=</span> pd<span class="token punctuation">.</span>concat<span class="token punctuation">(</span><span class="token punctuation">[</span>d_toystory_closet<span class="token punctuation">,</span> movie<span class="token punctuation">]</span><span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> join<span class="token operator">=</span><span class="token string">'inner'</span><span class="token punctuation">)</span>
+<span class="token keyword">del</span> d_result<span class="token punctuation">[</span><span class="token string">'movie_id'</span><span class="token punctuation">]</span>
+d_result<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>distance</th>
+      <th>movie_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>Toy Story (1995)</td>
+    </tr>
+    <tr>
+      <td>587</td>
+      <td>0.511122</td>
+      <td>Beauty and the Beast (1991)</td>
+    </tr>
+    <tr>
+      <td>94</td>
+      <td>0.540992</td>
+      <td>Aladdin (1992)</td>
+    </tr>
+    <tr>
+      <td>70</td>
+      <td>0.551604</td>
+      <td>Lion King, The (1994)</td>
+    </tr>
+    <tr>
+      <td>209</td>
+      <td>0.563193</td>
+      <td>Indiana Jones and the Last Crusade (1989)</td>
+    </tr>
+    <tr>
+      <td>86</td>
+      <td>0.631215</td>
+      <td>Searching for Bobby Fischer (1993)</td>
+    </tr>
+    <tr>
+      <td>583</td>
+      <td>0.656768</td>
+      <td>Secret Garden, The (1993)</td>
+    </tr>
+    <tr>
+      <td>193</td>
+      <td>0.665646</td>
+      <td>Sting, The (1973)</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>0.681707</td>
+      <td>Apollo 13 (1995)</td>
+    </tr>
+    <tr>
+      <td>163</td>
+      <td>0.682708</td>
+      <td>Abyss, The (1989)</td>
+    </tr>
+    <tr>
+      <td>203</td>
+      <td>0.716056</td>
+      <td>Back to the Future (1985)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h4 id="3-7-2-Recommendation-for-a-given-user"><a href="#3-7-2-Recommendation-for-a-given-user" class="headerlink" title="3.7.2. Recommendation for a given user"></a>3.7.2. Recommendation for a given user</h4><img src="/blog/matrix-factorization/rated.png" width=800/>
+
+
+<pre class="line-numbers language-python"><code class="language-python">userID <span class="token operator">=</span> <span class="token number">12</span>
+user_row_number <span class="token operator">=</span> userID <span class="token operator">-</span> <span class="token number">1</span>
+user_data <span class="token operator">=</span> rating_train<span class="token punctuation">[</span>rating_train<span class="token punctuation">.</span>user_id <span class="token operator">==</span> <span class="token punctuation">(</span>userID<span class="token punctuation">)</span><span class="token punctuation">]</span>
+user_full <span class="token operator">=</span> <span class="token punctuation">(</span>user_data<span class="token punctuation">.</span>merge<span class="token punctuation">(</span>movie<span class="token punctuation">,</span> how <span class="token operator">=</span> <span class="token string">'left'</span><span class="token punctuation">,</span> left_on <span class="token operator">=</span> <span class="token string">'movie_id'</span><span class="token punctuation">,</span> right_on <span class="token operator">=</span> <span class="token string">'movie_id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'rating'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> ascending<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">'User %s has already rated %s movies.'</span> <span class="token operator">%</span><span class="token punctuation">(</span>userID<span class="token punctuation">,</span> user_full<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre><code>User 12 has already rated 50 movies.</code></pre>
+<pre class="line-numbers language-python"><code class="language-python">user_full<span class="token punctuation">.</span>head<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>user_id</th>
+      <th>movie_id</th>
+      <th>rating</th>
+      <th>movie_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>16</td>
+      <td>12</td>
+      <td>753</td>
+      <td>1.4696</td>
+      <td>Burnt By the Sun (1994)</td>
+    </tr>
+    <tr>
+      <td>45</td>
+      <td>12</td>
+      <td>238</td>
+      <td>1.4696</td>
+      <td>Raising Arizona (1987)</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>12</td>
+      <td>242</td>
+      <td>1.4696</td>
+      <td>Kolya (1996)</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>12</td>
+      <td>161</td>
+      <td>1.4696</td>
+      <td>Top Gun (1986)</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>12</td>
+      <td>4</td>
+      <td>1.4696</td>
+      <td>Get Shorty (1995)</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>12</td>
+      <td>174</td>
+      <td>1.4696</td>
+      <td>Raiders of the Lost Ark (1981)</td>
+    </tr>
+    <tr>
+      <td>41</td>
+      <td>12</td>
+      <td>98</td>
+      <td>1.4696</td>
+      <td>Silence of the Lambs, The (1991)</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>12</td>
+      <td>282</td>
+      <td>1.4696</td>
+      <td>Time to Kill, A (1996)</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>12</td>
+      <td>318</td>
+      <td>1.4696</td>
+      <td>Schindler's List (1993)</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>12</td>
+      <td>402</td>
+      <td>1.4696</td>
+      <td>Ghost (1990)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<pre class="line-numbers language-python"><code class="language-python">pred_df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>M_pred<span class="token punctuation">)</span>
+sorted_user_predictions <span class="token operator">=</span> pred_df<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>user_row_number<span class="token punctuation">]</span><span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span>ascending<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+sorted_user_pred_df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>sorted_user_predictions<span class="token punctuation">)</span><span class="token punctuation">.</span>reset_index<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>rename<span class="token punctuation">(</span>columns<span class="token operator">=</span><span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;'index': 'movie_id', 11:'rating'&amp;#125;)</span>
+recommend_4_user <span class="token operator">=</span> <span class="token punctuation">(</span>sorted_user_pred_df<span class="token punctuation">.</span>merge<span class="token punctuation">(</span>movie<span class="token punctuation">,</span> how <span class="token operator">=</span> <span class="token string">'left'</span><span class="token punctuation">,</span> left_on <span class="token operator">=</span> <span class="token string">'movie_id'</span><span class="token punctuation">,</span> right_on <span class="token operator">=</span> <span class="token string">'movie_id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'rating'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> ascending<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+unrated_list <span class="token operator">=</span> np<span class="token punctuation">.</span>setdiff1d<span class="token punctuation">(</span>recommend_4_user<span class="token punctuation">[</span><span class="token string">'movie_id'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>tolist<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> user_full<span class="token punctuation">[</span><span class="token string">'movie_id'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>tolist<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+recommend_4_user_unrated <span class="token operator">=</span> recommend_4_user<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>recommend_4_user<span class="token punctuation">[</span><span class="token string">'movie_id'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>isin<span class="token punctuation">(</span>unrated_list<span class="token punctuation">)</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">'Recommending the 10 highest predicted ratings movies for user %s from remaining %s unrated ones.'</span> <span class="token operator">%</span><span class="token punctuation">(</span>userID<span class="token punctuation">,</span> unrated_list<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+recommend_4_user_unrated<span class="token punctuation">.</span>head<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre><code>Recommending the 10 highest predicted ratings movies for user 12 from remaining 1632 unrated ones.</code></pre>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie_id</th>
+      <th>rating</th>
+      <th>movie_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>771</td>
+      <td>3.441464</td>
+      <td>Johnny Mnemonic (1995)</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1219</td>
+      <td>2.896367</td>
+      <td>Goofy Movie, A (1995)</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1008</td>
+      <td>2.755474</td>
+      <td>I Shot Andy Warhol (1996)</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>368</td>
+      <td>2.724087</td>
+      <td>Bio-Dome (1996)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>785</td>
+      <td>2.604431</td>
+      <td>Only You (1994)</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>946</td>
+      <td>2.533775</td>
+      <td>Fox and the Hound, The (1981)</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>1166</td>
+      <td>2.520267</td>
+      <td>Love &amp; Human Remains (1993)</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>696</td>
+      <td>2.319934</td>
+      <td>City Hall (1996)</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>420</td>
+      <td>2.314357</td>
+      <td>Alice in Wonderland (1951)</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>250</td>
+      <td>2.284594</td>
+      <td>Fifth Element, The (1997)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+</p></div><div class="pagination"><p class="clearfix"><span>&nbsp;</span><span class="next pagbuttons"><a role="navigation" href="/blog/nlp-topics/" title="NLP Topics">Next post: NLP Topics&nbsp;<i class="fa fa-angle-double-right"></i></a></span></p></div></div></div></div><div class="visible-xs site-bottom-footer"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div></div><script src="/blog/js/jquery-3.1.0.min.js"></script><script src="/blog/js/bootstrap.min.js"></script><script src="/blog/js/jquery-migrate-1.2.1.min.js"></script><script src="/blog/js/jquery.appear.js"></script><script src="/blog/js/google-analytics.js"></script><script src="/blog/js/typography.js"></script></body></html>

@@ -24,8 +24,9 @@
 <h3 id="1-1-Netflix-Prize"><a href="#1-1-Netflix-Prize" class="headerlink" title="1.1. Netflix Prize"></a>1.1. Netflix Prize</h3><p>In 2006, Netflix announced the Netflix Prize, a competition to predict movie ratings on a 5-star scale. Netflix conducted this competition to find new ways to improve its recommendations. And used the root mean squared error (RMSE) between the predicted and actual rating to evaluate and quantify.</p>
 <p>Team BellKor took over the top spot in the competition in the summer of 2007, and won the 2007 Progress Prize with the best score at the time: 8.43 percent better than Netflix. The method they introduced was a realization of latent factor models based on <strong>Matrix Factorization</strong>.</p>
 <h3 id="1-2-Matrix-Factorization"><a href="#1-2-Matrix-Factorization" class="headerlink" title="1.2. Matrix Factorization"></a>1.2. Matrix Factorization</h3><p>Matrix factorization is the breaking down of one matrix into a product of multiple matrices. There are many different ways to factor matrices, but singular value decomposition (SVD) is particularly useful for making recommendations.</p>
-<h3 id="1-3-Matirx-Completion"><a href="#1-3-Matirx-Completion" class="headerlink" title="1.3. Matirx Completion"></a>1.3. Matirx Completion</h3><p>Borrow some notations and pictures from textbook <em>Chapter 4.1 Motivating Examples of Low-Rank Modeling</em>:<br><img src="matrix-factorization/textbook.png"></p>
-<p>Given a rating matrix $M$ with $N_1$ users and $N_2$ objects that contains every user/object pair. Users rate objects based on the quality of their experience. It is clear that it will have many missing values. We wish to predict users ratings of items that they have not yet rated. <strong>GOAL: fill in the missing entries of $M$</strong>.<br><img src="matrix-factorization/generative.png"><br>Matrix $M$ here is a low-rank matrix:</p>
+<h3 id="1-3-Matirx-Completion"><a href="#1-3-Matirx-Completion" class="headerlink" title="1.3. Matirx Completion"></a>1.3. Matirx Completion</h3><p>Borrow some notations and pictures from textbook <em>Chapter 4.1 Motivating Examples of Low-Rank Modeling</em>:<br><img src="/blog/matrix-factorization/textbook.png"></p>
+<p>Given a rating matrix $M$ with $N_1$ users and $N_2$ objects that contains every user/object pair. Users rate objects based on the quality of their experience. It is clear that it will have many missing values. We wish to predict users ratings of items that they have not yet rated. <strong>GOAL: fill in the missing entries of $M$</strong>.<br><img src="/blog/matrix-factorization/generative.png"></p>
+<p>Matrix $M$ here is a low-rank matrix:</p>
 <ul>
 <li>Many columns should look similar. Two movies may have correlated ratings.</li>
 <li>$N_1$-dimensional columns don’t fill up $\mathbb{R}^{N_1}$, where $d \ll min{N_1, N_2}$ is the latent factors</li>
@@ -191,15 +192,7 @@ i <span class="token operator">=</span> <span class="token number">1</span>
     plt<span class="token punctuation">.</span>xticks<span class="token punctuation">(</span><span class="token punctuation">[</span>int<span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
     i <span class="token operator">+=</span> <span class="token number">1</span>
 plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<style>
-    .center{
-        margin-left: auto;
-        margin-right: auto;
-    }
-</style>
-<img src="matrix-factorization/ja3375_code_15_0.png" class="center">
-
-
+<p><img src="/blog/matrix-factorization/ja3375_code_15_0.png" alt="png"></p>
 <h3 id="3-6-RMSE-for-each-run-and-pick-the-best-run-for-prediction"><a href="#3-6-RMSE-for-each-run-and-pick-the-best-run-for-prediction" class="headerlink" title="3.6. RMSE for each run and pick the best run for prediction"></a>3.6. RMSE for each run and pick the best run for prediction</h3><pre class="line-numbers language-python"><code class="language-python">RMSE_result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> 
 <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">(</span>u_result<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     u <span class="token operator">=</span> u_result<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
@@ -325,10 +318,7 @@ plt<span class="token punctuation">.</span>xlabel<span class="token punctuation"
 plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="/blog/matrix-factorization/ja3375_code_19_0.png" alt="png"></p>
-<h3 id="3-7-Play-around-with-the-prediction"><a href="#3-7-Play-around-with-the-prediction" class="headerlink" title="3.7. Play around with the prediction"></a>3.7. Play around with the prediction</h3><h4 id="3-7-1-Find-the-similar-movies-for-a-given-one-i-e-Toy-Story"><a href="#3-7-1-Find-the-similar-movies-for-a-given-one-i-e-Toy-Story" class="headerlink" title="3.7.1. Find the similar movies for a given one (i.e., Toy Story)"></a>3.7.1. Find the similar movies for a given one (i.e., Toy Story)</h4><img src="matrix-factorization/choose3.png" width=800/>
-According to Euclidean Distance using their respective locations $v_j$
-
-
+<h3 id="3-7-Play-around-with-the-prediction"><a href="#3-7-Play-around-with-the-prediction" class="headerlink" title="3.7. Play around with the prediction"></a>3.7. Play around with the prediction</h3><h4 id="3-7-1-Find-the-similar-movies-for-a-given-one-i-e-Toy-Story"><a href="#3-7-1-Find-the-similar-movies-for-a-given-one-i-e-Toy-Story" class="headerlink" title="3.7.1. Find the similar movies for a given one (i.e., Toy Story)"></a>3.7.1. Find the similar movies for a given one (i.e., Toy Story)</h4><p><img src="/blog/matrix-factorization/choose3.png" alt="png"><br>According to Euclidean Distance using their respective locations $v_j$</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">closet_movie</span><span class="token punctuation">(</span>movie_id<span class="token punctuation">,</span> best_v<span class="token punctuation">)</span><span class="token punctuation">:</span>
     best_v_T <span class="token operator">=</span> best_v<span class="token punctuation">.</span>transpose<span class="token punctuation">(</span><span class="token punctuation">)</span>
     select_movie <span class="token operator">=</span> best_v_T<span class="token punctuation">[</span>movie_id<span class="token number">-1</span><span class="token punctuation">]</span>
@@ -418,9 +408,7 @@ d_result<span aria-hidden="true" class="line-numbers-rows"><span></span><span></
 
 
 
-<h4 id="3-7-2-Recommendation-for-a-given-user"><a href="#3-7-2-Recommendation-for-a-given-user" class="headerlink" title="3.7.2. Recommendation for a given user"></a>3.7.2. Recommendation for a given user</h4><img src="matrix-factorization/rated.png" width=800/>
-
-
+<h4 id="3-7-2-Recommendation-for-a-given-user"><a href="#3-7-2-Recommendation-for-a-given-user" class="headerlink" title="3.7.2. Recommendation for a given user"></a>3.7.2. Recommendation for a given user</h4><p><img src="/blog/matrix-factorization/rated.png" alt="png"></p>
 <pre class="line-numbers language-python"><code class="language-python">userID <span class="token operator">=</span> <span class="token number">12</span>
 user_row_number <span class="token operator">=</span> userID <span class="token operator">-</span> <span class="token number">1</span>
 user_data <span class="token operator">=</span> rating_train<span class="token punctuation">[</span>rating_train<span class="token punctuation">.</span>user_id <span class="token operator">==</span> <span class="token punctuation">(</span>userID<span class="token punctuation">)</span><span class="token punctuation">]</span>

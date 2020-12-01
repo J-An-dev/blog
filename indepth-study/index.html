@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>Indepth Study · J. An's Blog</title><meta name="description" content="Name: Jie An
+UNI: ja3375
+
+1. Task 1: ELK Stack
+1.1. ELK Stack Installation
+1.2. Example of a Logstash pipeline sending syslog logs into the Stack
+1.2."><meta name="keywords" content=""><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/blog/css/bootstrap.min.css"><link rel="stylesheet" href="/blog/css/font-awesome.min.css"><link rel="stylesheet" href="/blog/css/style.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        }
+    })
+
+</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML" async></script><meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/blog/css/prism-base16-ateliersulphurpool.light.css" type="text/css">
+<link rel="stylesheet" href="/blog/css/prism-line-numbers.css" type="text/css"></head><body><div id="stage" class="container"><div class="row"><div id="side-bar" class="col-sm-3 col-xs-12 side-container invisible"><div class="vertical-text site-title"><h3 tabindex="-1" class="site-title-small"><a href="/blog/" class="a-title"></a></h3><h1 tabindex="-1" class="site-title-large"><a href="/blog/" class="a-title">J. An's Blog</a></h1><!--h6(onclick="triggerSiteNav()") Trigger--></div><br class="visible-lg visible-md visible-sm"><div id="site-nav" class="site-title-links"><ul><li><a href="/blog/">Home</a></li><li><a href="/blog/archives">Archive</a></li><li><a href="/blog/tags">Tags</a></li><li class="soc"><a href="https://github.com/j-an-dev" target="_blank" rel="noopener noreferrer"><i class="fa fa-github">&nbsp;</i></a><a href="https://twitter.com/anjie_tweet" target="_blank" rel="noopener noreferrer"><i class="fa fa-twitter">&nbsp;</i></a><a href="https://www.instagram.com/aj_ins" target="_blank" rel="noopener noreferrer"><i class="fa fa-instagram">&nbsp;</i></a></li></ul><div class="visible-lg visible-md visible-sm site-nav-footer"><br class="site-nav-footer-br"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div><div id="main-container" class="col-sm-9 col-xs-12 main-container invisible"><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post-container"><p class="post-title"><a>Indepth Study</a></p><p class="post-meta"><span class="date meta-item">Posted on&nbsp;2020-12-01</span></p><p class="post-abstract"><p>Name: Jie An</p>
+<p>UNI: ja3375</p>
+<ul>
+<li><a href="#1-task-1-elk-stack">1. Task 1: ELK Stack</a><ul>
+<li><a href="#11-elk-stack-installation">1.1. ELK Stack Installation</a></li>
+<li><a href="#12-example-of-a-logstash-pipeline-sending-syslog-logs-into-the-stack">1.2. Example of a Logstash pipeline sending syslog logs into the Stack</a><ul>
+<li><a href="#121-implementation-details">1.2.1. Implementation details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-Task-1-ELK-Stack"><a href="#1-Task-1-ELK-Stack" class="headerlink" title="1. Task 1: ELK Stack"></a>1. Task 1: ELK Stack</h1><h2 id="1-1-ELK-Stack-Installation"><a href="#1-1-ELK-Stack-Installation" class="headerlink" title="1.1. ELK Stack Installation"></a>1.1. ELK Stack Installation</h2><p>I followed the tutorial <a target="_blank" rel="noopener" href="https://logz.io/learn/complete-guide-elk-stack/">The Complete Guide to the ELK Stack</a> to digest the basic concepts of th ELK Stack and tutorial <a target="_blank" rel="noopener" href="https://logz.io/blog/elk-mac/">Installing the ELK Stack on Mac OS X</a> to install the required services using Homebrew. The screenshot below reflects the success of installation.</p>
+<p><img src="/blog/indepth-study/installation.png" alt="installation"></p>
+<h2 id="1-2-Example-of-a-Logstash-pipeline-sending-syslog-logs-into-the-Stack"><a href="#1-2-Example-of-a-Logstash-pipeline-sending-syslog-logs-into-the-Stack" class="headerlink" title="1.2. Example of a Logstash pipeline sending syslog logs into the Stack"></a>1.2. Example of a Logstash pipeline sending syslog logs into the Stack</h2><p>In this example, I implemented a Logstash pipeline that collecting system log data and shipping them into the Stack. Then, created the index pattern <code>syslog-demo</code> in Kibana to visualize the syslog data.</p>
+<h3 id="1-2-1-Implementation-details"><a href="#1-2-1-Implementation-details" class="headerlink" title="1.2.1. Implementation details"></a>1.2.1. Implementation details</h3><ol>
+<li><p>Start services Elasticsearch and Kibana</p>
+<pre><code>brew services start elasticsearch
+brew services start kibana</code></pre>
+</li>
+<li><p>Create a new Logstash configuration file</p>
+<pre><code># Make the directory
+sudo mkdir -p /etc/logstash/conf.d
+</code></pre>
+</li>
+</ol>
+<h1 id="Locate-to-the-configuration-folder"><a href="#Locate-to-the-configuration-folder" class="headerlink" title="Locate to the configuration folder"></a>Locate to the configuration folder</h1><p>cd /etc/logstash/conf.d</p>
+<h1 id="Create-the-conf-file"><a href="#Create-the-conf-file" class="headerlink" title="Create the conf file"></a>Create the conf file</h1><p>sudo vim  /etc/logstash/conf.d/syslog.conf</p>
+<pre><code>Entered the following configuration in the ``syslog.conf`` file:</code></pre>
+<p>input &#123;<br>  file &#123;<br>    path =&gt; [ “/var/log/*.log”, “/var/log/messages”, “/var/log/syslog” ]<br>    type =&gt; “syslog”<br>  &#125;<br>&#125;</p>
+<p>filter &#123;<br>  if [type] == “syslog” &#123;<br>    grok &#123;<br>      match =&gt; &#123; “message” =&gt; “%&#123;SYSLOGTIMESTAMP:syslog_timestamp&#125; %&#123;SYSLOGHOST:syslog_hostname&#125; %&#123;DATA:syslog_program&#125;(?:[%&#123;POSINT:syslog_pid&#125;])?: %&#123;GREEDYDATA:syslog_message&#125;” &#125;<br>      add_field =&gt; [ “received_at”, “%&#123;@timestamp&#125;” ]<br>      add_field =&gt; [ “received_from”, “%&#123;host&#125;” ]<br>    &#125;<br>    syslog_pri &#123; &#125;<br>    date &#123;<br>      match =&gt; [ “syslog_timestamp”, “MMM  d HH:mm:ss”, “MMM dd HH:mm:ss” ]<br>    &#125;<br>  &#125;<br>&#125;</p>
+<p>output &#123;<br>  elasticsearch &#123;<br>    hosts =&gt; [“127.0.0.1:9200”]<br>    index =&gt; “syslog-demo”<br>  &#125;<br>  stdout &#123; codec =&gt; rubydebug &#125;<br>&#125;</p>
+<pre><code>
+3. Start the Logstash pipeline
+
+Make sure under the directory ``/etc/logstash/conf.d/``, then run ``logstash -f syslog.conf`` to start the pipeline, giving the following logs:
+![Logstach Pipeline](/blog/indepth-study/logstash_pipeline.png)
+
+In Kibana (by accessing https://localhost:5601), initialized an index pattern with the index name ``syslog-demo`` created by the Logstash pipeline and selected ``@timestamp`` field as the Time Filter field name.
+![Kibana Index Pattern](/blog/indepth-study/kibana_index_pattern.png)
+
+Under the ``Discover`` page, syslog data could be found:
+![Discover Logs](/blog/indepth-study/discover_log.png)
+
+</code></pre>
+</p></div><div class="pagination"><p class="clearfix"><span>&nbsp;</span><span class="next pagbuttons"><a role="navigation" href="/blog/matrix-factorization/" title="Decode the Secrets Behind Recommender Systems">Next post: Decode the Secrets Behind Recommender Systems&nbsp;<i class="fa fa-angle-double-right"></i></a></span></p></div></div></div></div><div class="visible-xs site-bottom-footer"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div></div><script src="/blog/js/jquery-3.1.0.min.js"></script><script src="/blog/js/bootstrap.min.js"></script><script src="/blog/js/jquery-migrate-1.2.1.min.js"></script><script src="/blog/js/jquery.appear.js"></script><script src="/blog/js/google-analytics.js"></script><script src="/blog/js/typography.js"></script></body></html>

@@ -6,7 +6,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="https://j-an.org/blog/"/>
-  <updated>2020-12-01T15:16:25.832Z</updated>
+  <updated>2020-12-01T15:41:30.975Z</updated>
   <id>https://j-an.org/blog/</id>
   
   <author>
@@ -17,25 +17,15 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Indepth Study</title>
+    <title>In-depth Study</title>
     <link href="https://j-an.org/blog/indepth-study/"/>
     <id>https://j-an.org/blog/indepth-study/</id>
     <published>2020-12-01T15:14:37.000Z</published>
-    <updated>2020-12-01T15:16:25.832Z</updated>
+    <updated>2020-12-01T15:41:30.975Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;p&gt;Name: Jie An&lt;/p&gt;
-&lt;p&gt;UNI: ja3375&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;#1-task-1-elk-stack&quot;&gt;1. Task 1: ELK Stack&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a
-        
-      
+      &lt;p&gt;The in-depth study documentation for the class COMS 6998 taken in the Fall 2020 @ Columbia. Topics include the ELK Stack and more to be determined.
     
     </summary>
     

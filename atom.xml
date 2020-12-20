@@ -6,7 +6,7 @@
   <link href="/blog/atom.xml" rel="self"/>
   
   <link href="https://j-an.org/blog/"/>
-  <updated>2020-12-20T19:21:07.970Z</updated>
+  <updated>2020-12-20T19:52:20.467Z</updated>
   <id>https://j-an.org/blog/</id>
   
   <author>
@@ -15,6 +15,52 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://j-an.org/blog/indepth-study/"/>
+    <id>https://j-an.org/blog/indepth-study/</id>
+    <published>2020-12-20T19:52:20.466Z</published>
+    <updated>2020-12-20T19:52:20.467Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;title&gt;1&amp;period; Task 1&amp;colon; ELK Stack&lt;/title&gt;
+        &lt;style&gt;
+&lt;/style&gt;
+        
+        &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css&quot;&gt;
+&lt;style&gt;
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe WPC&#39;, &#39;Segoe UI&#39;, system-ui, &#39;Ubuntu&#39;, &#39;Droid Sans&#39;, sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        &lt;/style&gt;
+        &lt;style&gt;
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+&lt;/style&gt;
+        
+        
+        
+    &lt;/head&gt;
+    &lt;body class=&quot;vscode-body vscode-light&quot;&gt;
+        &lt;hr&gt;
+&lt;h2 id=&quot;title-in-depth-study-elk-kafka-sparkdate-2020-12-01-101437tags&quot;&gt;title: In-depth Study: ELK, Kafka, Spark
+date: 2020-12-01 10:14:37
+tags:&lt;/h2&gt;
+&lt;p&gt;The in-depth study documentation for the graduate level course COMS 6998: Cloud Computing &amp;amp; Big Data taken in Fall 2020 @ Columbia. Topics include the ELK Stack, Kafka (w/ AWS MSK), Spark (w/ AWS EMR) and an end-to-end Real-time Credit Card Fraud Detection Pipeline implementation.
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>In-depth Study</title>

@@ -63,15 +63,15 @@ tags:&lt;/h2&gt;
   </entry>
   
   <entry>
-    <title>In-depth Study</title>
+    <title>In-depth Study - ELK, Kafka, Spark</title>
     <link href="https://j-an.org/blog/indepth-study/"/>
     <id>https://j-an.org/blog/indepth-study/</id>
     <published>2020-12-01T15:14:37.000Z</published>
-    <updated>2020-12-20T19:21:07.970Z</updated>
+    <updated>2020-12-20T20:00:53.962Z</updated>
     
     <summary type="html">
     
-      &lt;p&gt;The in-depth study documentation for the graduate level course COMS 6998: Cloud Computing &amp;amp; Big Data taken in Fall 2020 @ Columbia. Topics include the ELK Stack, Kafka (w/ AWS MSK) and more to be determined.
+      &lt;p&gt;The in-depth study documentation for the graduate level course COMS 6998: Cloud Computing &amp;amp; Big Data taken in Fall 2020 @ Columbia. Topics include the ELK Stack, Kafka (w/ AWS MSK), Spark (w/ AWS EMR) and an end-to-end Real-time Credit Card Fraud Detection Pipeline implementation.
     
     </summary>
     

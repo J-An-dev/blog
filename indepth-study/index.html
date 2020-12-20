@@ -19,7 +19,7 @@
 </li>
 </ul>
 </li>
-<li><a href="#2-task-2-kafka-pipeline">2. Task 2: Kafka Pipeline</a><ul>
+<li><a href="#2-task-2-kafka-setup">2. Task 2: Kafka Setup</a><ul>
 <li><a href="#21-kafka-installation">2.1. Kafka Installation</a></li>
 <li><a href="#22-example-of-a-kafka-messages-producing-and-consuming-pipeline">2.2. Example of a Kafka messages producing and consuming pipeline</a><ul>
 <li><a href="#221-create-a-kafka-topic-to-store-events">2.2.1. Create a Kafka topic to store events</a></li>
@@ -27,7 +27,7 @@
 <li><a href="#223-consume-the-messages-produced-by-the-producer">2.2.3. Consume the messages produced by the producer</a></li>
 </ul>
 </li>
-<li><a href="#23-create-a-kafka-pipeline-on-aws">2.3. Create a Kafka pipeline on AWS</a><ul>
+<li><a href="#23-create-a-kafka-pipeline-on-aws-msk">2.3. Create a Kafka pipeline on AWS MSK</a><ul>
 <li><a href="#231-vpc-network-configuration">2.3.1. VPC network configuration</a></li>
 <li><a href="#232-create-a-kafka-cluster-on-aws-msk-service">2.3.2. Create a Kafka cluster on AWS MSK service</a></li>
 <li><a href="#233-create-an-ec2-instance-and-connect-to-the-kafka-cluster">2.3.3. Create an EC2 instance and connect to the Kafka cluster</a></li>
@@ -42,6 +42,34 @@
 <li><a href="#2353-produce-a-message-in-the-topic-to-trigger-the-lambda-function">2.3.5.3. Produce a message in the topic to trigger the Lambda function</a></li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3-task-3-spark-setup">3. Task 3: Spark Setup</a><ul>
+<li><a href="#31-spark-installation">3.1. Spark Installation</a></li>
+<li><a href="#32-working-with-aws-emr">3.2. Working with AWS EMR</a><ul>
+<li><a href="#321-create-a-spark-cluster-on-aws-emr">3.2.1. Create a Spark cluster on AWS EMR</a></li>
+<li><a href="#322-working-with-emr-notebooks">3.2.2. Working with EMR Notebooks</a></li>
+<li><a href="#323-submit-a-pyspark-job-to-the-emr-cluster">3.2.3. Submit a PySpark job to the EMR cluster</a><ul>
+<li><a href="#3231-creat-the-job-script-and-save-it-in-the-s3-bucket">3.2.3.1. Creat the job script and save it in the S3 bucket</a></li>
+<li><a href="#3232-create-a-input-text-ans-save-it-in-the-s3-bucket">3.2.3.2. Create a input text ans save it in the S3 bucket</a></li>
+<li><a href="#3233-submit-the-job-as-a-step-to-the-cluster">3.2.3.3. Submit the job as a step to the cluster</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-task-4-real-time-credit-card-fraud-detection-pipeline">4. Task 4: Real-time Credit Card Fraud Detection Pipeline</a><ul>
+<li><a href="#41-workflow-and-architecture">4.1. Workflow and Architecture</a></li>
+<li><a href="#42-implementation-details">4.2. Implementation Details</a><ul>
+<li><a href="#421-customers--transactions-dataset">4.2.1. Customers &amp; Transactions dataset</a></li>
+<li><a href="#422-spark-ml-job">4.2.2. Spark ML job</a></li>
+<li><a href="#423-kafka-producer">4.2.3. Kafka producer</a></li>
+<li><a href="#424-spark-streaming-job">4.2.4. Spark Streaming job</a></li>
+<li><a href="#425-front-end-dashboard">4.2.5. Front-end dashboard</a></li>
+<li><a href="#426-rest-api-for-customers-and-transaction-statements">4.2.6. REST API for customers and transaction statements</a></li>
 </ul>
 </li>
 </ul>
@@ -100,7 +128,7 @@ output &#123;
 <p>Make sure under the directory <code>/etc/logstash/conf.d/</code>, then run <code>logstash -f syslog.conf</code> to start the pipeline giving the following logs:<br><img src="/blog/indepth-study/logstash_pipeline.png" alt="Logstach Pipeline"></p>
 <p>In Kibana (by accessing <a target="_blank" rel="noopener" href="https://localhost:5601/">https://localhost:5601</a>), initialized an index pattern with the index name <code>syslog-demo</code> created by the Logstash pipeline and selected <code>@timestamp</code> field as the Time Filter field name.<br><img src="/blog/indepth-study/kibana_index_pattern.png" alt="Kibana Index Pattern"></p>
 <p>Under the <code>Discover</code> page, syslog data could be found:<br><img src="/blog/indepth-study/discover_log.png" alt="Discover Logs"></p>
-<h1 id="2-Task-2-Kafka-Pipeline"><a href="#2-Task-2-Kafka-Pipeline" class="headerlink" title="2. Task 2: Kafka Pipeline"></a>2. Task 2: Kafka Pipeline</h1><h2 id="2-1-Kafka-Installation"><a href="#2-1-Kafka-Installation" class="headerlink" title="2.1. Kafka Installation"></a>2.1. Kafka Installation</h2><p>Working on Mac, I choose to use Homebrew for installation:</p>
+<h1 id="2-Task-2-Kafka-Setup"><a href="#2-Task-2-Kafka-Setup" class="headerlink" title="2. Task 2: Kafka Setup"></a>2. Task 2: Kafka Setup</h1><h2 id="2-1-Kafka-Installation"><a href="#2-1-Kafka-Installation" class="headerlink" title="2.1. Kafka Installation"></a>2.1. Kafka Installation</h2><p>Working on Mac, I choose to use Homebrew for installation:</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># This will install Java 1.8, Kafka, ZooKeeper at the same time</span>
 brew install kafka
 
@@ -118,8 +146,8 @@ brew services start kafka<span aria-hidden="true" class="line-numbers-rows"><spa
 <h3 id="2-2-3-Consume-the-messages-produced-by-the-producer"><a href="#2-2-3-Consume-the-messages-produced-by-the-producer" class="headerlink" title="2.2.3. Consume the messages produced by the producer"></a>2.2.3. Consume the messages produced by the producer</h3><p>Open another Terminal window and initialize the Kafka consumer console, which will listen to bootstrap server localhost at port 9092 at topic <code>qucikstart</code> from beginning:</p>
 <pre><code>kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart --from-beginning</code></pre>
 <p>Thie screenshot below reflects that the consumer successfully received the messages:<br><img src="/blog/indepth-study/events.png" alt="events"></p>
-<h2 id="2-3-Create-a-Kafka-pipeline-on-AWS"><a href="#2-3-Create-a-Kafka-pipeline-on-AWS" class="headerlink" title="2.3. Create a Kafka pipeline on AWS"></a>2.3. Create a Kafka pipeline on AWS</h2><h3 id="2-3-1-VPC-network-configuration"><a href="#2-3-1-VPC-network-configuration" class="headerlink" title="2.3.1. VPC network configuration"></a>2.3.1. VPC network configuration</h3><p>Amazon MSK is a highly available service, so it must be configured to run in a minimum of two Availability Zones in the preferred Region. To comply with security best practice, the brokers are usually configured in private subnets in each Region.</p>
-<p>For later one Amazon MSK to invoke Lambda, must ensure that there is a NAT Gateway running in the public subnet of each Region. I configure a new VPC with public and private subnets in two Availability Zones using <a target="_blank" rel="noopener" href="https://gist.github.com/jbesw/f9401b4c52a7446ef1bb71ceea8cc3e8">this</a> AWS CloudFormation template. In this configuration, the public subnets are set up to use a NAT Gateway.</p>
+<h2 id="2-3-Create-a-Kafka-pipeline-on-AWS-MSK"><a href="#2-3-Create-a-Kafka-pipeline-on-AWS-MSK" class="headerlink" title="2.3. Create a Kafka pipeline on AWS MSK"></a>2.3. Create a Kafka pipeline on AWS MSK</h2><h3 id="2-3-1-VPC-network-configuration"><a href="#2-3-1-VPC-network-configuration" class="headerlink" title="2.3.1. VPC network configuration"></a>2.3.1. VPC network configuration</h3><p>Amazon MSK is a highly available service, so it must be configured to run in a minimum of two Availability Zones in the preferred Region. To comply with security best practice, the brokers are usually configured in private subnets in each Region.</p>
+<p>For later one Amazon MSK to invoke Lambda, must ensure that there is a NAT Gateway running in the public subnet of each Region. I configure a new VPC with public and private subnets in two Availability Zones using <a href="/blog/indepth-study/vpc-msk.txt">this AWS CloudFormation template</a>. In this configuration, the public subnets are set up to use a NAT Gateway.</p>
 <p>The screenshot below reflets the VPC stack built from the template mentioned above:<br><img src="/blog/indepth-study/vpc.png" alt="vpc"></p>
 <h3 id="2-3-2-Create-a-Kafka-cluster-on-AWS-MSK-service"><a href="#2-3-2-Create-a-Kafka-cluster-on-AWS-MSK-service" class="headerlink" title="2.3.2. Create a Kafka cluster on AWS MSK service"></a>2.3.2. Create a Kafka cluster on AWS MSK service</h3><p>Under AWS MSK, I create a Kafka cluster <code>kafka-msk</code> under the VPC created in the above step and choose 2 for Number of Availability Zones. For these two Availability Zones in the VPC, choose the private subnets for each. Also set 1 broker per Availability Zone. The screenshot below reflects the configuration of the cluster:<br><img src="/blog/indepth-study/msk_config.png" alt="msk"></p>
 <h3 id="2-3-3-Create-an-EC2-instance-and-connect-to-the-Kafka-cluster"><a href="#2-3-3-Create-an-EC2-instance-and-connect-to-the-Kafka-cluster" class="headerlink" title="2.3.3. Create an EC2 instance and connect to the Kafka cluster"></a>2.3.3. Create an EC2 instance and connect to the Kafka cluster</h3><p>To access the Kafka cluster, I create an EC2 instance as a client machine under the same VPC as the cluster. From local Terminal, connect to the EC2 instance and set up the Kafka environment with the following code:</p>
@@ -186,4 +214,125 @@ ssl.truststore.location=/tmp/kafka.client.truststore.jks</code></pre>
     msg_bytes <span class="token operator">=</span> base64<span class="token punctuation">.</span>b64decode<span class="token punctuation">(</span>msg<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">'ascii'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
     message <span class="token operator">=</span> msg_bytes<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">'ascii'</span><span class="token punctuation">)</span>
     <span class="token keyword">print</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="3-Task-3-Spark-Setup"><a href="#3-Task-3-Spark-Setup" class="headerlink" title="3. Task 3: Spark Setup"></a>3. Task 3: Spark Setup</h1><h2 id="3-1-Spark-Installation"><a href="#3-1-Spark-Installation" class="headerlink" title="3.1. Spark Installation"></a>3.1. Spark Installation</h2><p>Working on Mac, I choose to use Homebrew for installation:</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># Install Scala</span>
+brew install scala
+
+<span class="token comment" spellcheck="true"># Install Spark</span>
+brew install apache<span class="token operator">-</span>spark<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>The Spark environment will be installed under <code>/usr/local/Cellar/apache-spark/3.0.1</code>. And run <code>spark-shell</code> in the terminal to start the Spark server:<br><img src="/blog/indepth-study/spark-shell.png" alt="spark-shell"></p>
+<p>It is also available to start the Python Spark API server <code>PySpark</code> with <code>pyspark</code>:<br><img src="/blog/indepth-study/pyspark.png" alt="pyspark"></p>
+<p>Keep the Spark server running, Spark user interface can be accessed through the link: <a target="_blank" rel="noopener" href="https://localhost:4040/jobs/">https://localhost:4040/jobs/</a>. Run the following Spark job in the Terminal shell, the UI would display the related job information:</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">import</span> pyspark
+<span class="token operator">>></span><span class="token operator">></span> <span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkContext
+<span class="token operator">>></span><span class="token operator">></span> rdd <span class="token operator">=</span> sc<span class="token punctuation">.</span>parallelize<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token operator">>></span><span class="token operator">></span> rdd<span class="token punctuation">.</span>take<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/blog/indepth-study/spark_job.png" alt="spark_job"></p>
+<p>To manually start any other Spark server, can go to the directory <code>/usr/local/Cellar/apache-spark/3.0.1/libexec/sbin</code> and run the function list in the <code>sbin</code> folder:<br><img src="/blog/indepth-study/spark_server.png" alt="spark_server"></p>
+<p>For example, under the <code>sbin</code> foler, run <code>./start-master.sh</code> to start the Master server and the Master server UI can be accessed through the link: <a target="_blank" rel="noopener" href="https://localhost:8080/">https://localhost:8080/</a> as showed below:<br><img src="/blog/indepth-study/spark_master.png" alt="spark_master"></p>
+<h2 id="3-2-Working-with-AWS-EMR"><a href="#3-2-Working-with-AWS-EMR" class="headerlink" title="3.2. Working with AWS EMR"></a>3.2. Working with AWS EMR</h2><h3 id="3-2-1-Create-a-Spark-cluster-on-AWS-EMR"><a href="#3-2-1-Create-a-Spark-cluster-on-AWS-EMR" class="headerlink" title="3.2.1. Create a Spark cluster on AWS EMR"></a>3.2.1. Create a Spark cluster on AWS EMR</h3><p>Under AWS EMR, I create a Spark cluster <code>spark-emr</code> with the configuration showed in the screenshot below:<br><img src="/blog/indepth-study/emr.png" alt="emr_spec"></p>
+<h3 id="3-2-2-Working-with-EMR-Notebooks"><a href="#3-2-2-Working-with-EMR-Notebooks" class="headerlink" title="3.2.2. Working with EMR Notebooks"></a>3.2.2. Working with EMR Notebooks</h3><p>As mentioned in the <a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-managed-notebooks.html">AWS EMR documentation</a>, the user can use Amazon EMR Notebooks along with Amazon EMR clusters running Apache Spark to create and open Jupyter Notebook and JupyterLab interfaces within the Amazon EMR console.</p>
+<p>In the EMR Notebooks panel, I start a notebook attached to the cluster created in the above step (make sure the cluster install the application JupyterEnterpriseGateway). Then open the notebook under the PySpark environment and run some test code. The screenshow below reflects the success of the Spark job processing.<br><img src="/blog/indepth-study/emr_notebook.png" alt="emr_notebook"></p>
+<h3 id="3-2-3-Submit-a-PySpark-job-to-the-EMR-cluster"><a href="#3-2-3-Submit-a-PySpark-job-to-the-EMR-cluster" class="headerlink" title="3.2.3. Submit a PySpark job to the EMR cluster"></a>3.2.3. Submit a PySpark job to the EMR cluster</h3><p>The main idea for this part is to built a simple spark job and execute it as a step in the EMR cluster.</p>
+<h4 id="3-2-3-1-Creat-the-job-script-and-save-it-in-the-S3-bucket"><a href="#3-2-3-1-Creat-the-job-script-and-save-it-in-the-S3-bucket" class="headerlink" title="3.2.3.1. Creat the job script and save it in the S3 bucket"></a>3.2.3.1. Creat the job script and save it in the S3 bucket</h4><p>The following python script is a sample Word Count job that used later. I upload it into the S3 bucket with the path <code>s3://pyspark-job/script/pyspark_word_count.py</code>.</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkContext
+<span class="token keyword">import</span> sys
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> len<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Usage: wordcount "</span><span class="token punctuation">,</span> file<span class="token operator">=</span>sys<span class="token punctuation">.</span>stderr<span class="token punctuation">)</span>
+        exit<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+    sc <span class="token operator">=</span> SparkContext<span class="token punctuation">(</span>appName<span class="token operator">=</span><span class="token string">"demo-word-count"</span><span class="token punctuation">)</span>
+    text_file <span class="token operator">=</span> sc<span class="token punctuation">.</span>textFile<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    counts <span class="token operator">=</span> text_file<span class="token punctuation">.</span>flatMap<span class="token punctuation">(</span><span class="token keyword">lambda</span> line<span class="token punctuation">:</span> line<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>map<span class="token punctuation">(</span><span class="token keyword">lambda</span> word<span class="token punctuation">:</span> <span class="token punctuation">(</span>word<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>reduceByKey<span class="token punctuation">(</span><span class="token keyword">lambda</span> a<span class="token punctuation">,</span> b<span class="token punctuation">:</span> a <span class="token operator">+</span> b<span class="token punctuation">)</span>
+    counts<span class="token punctuation">.</span>saveAsTextFile<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    sc<span class="token punctuation">.</span>stop<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-2-3-2-Create-a-input-text-ans-save-it-in-the-S3-bucket"><a href="#3-2-3-2-Create-a-input-text-ans-save-it-in-the-S3-bucket" class="headerlink" title="3.2.3.2. Create a input text ans save it in the S3 bucket"></a>3.2.3.2. Create a input text ans save it in the S3 bucket</h4><p>I generate a 10 paragraphs 1000 words <a href="/blog/indepth-study/text.txt">Lorem Ipusm text file</a> as the input for the Word Count job and upload it into the S3 bucket with the path <code>s3://pyspark-job/input/text.txt</code>.</p>
+<h4 id="3-2-3-3-Submit-the-job-as-a-step-to-the-cluster"><a href="#3-2-3-3-Submit-the-job-as-a-step-to-the-cluster" class="headerlink" title="3.2.3.3. Submit the job as a step to the cluster"></a>3.2.3.3. Submit the job as a step to the cluster</h4><p>To submit the PySpark job as a step to the EMR cluster and then execute in it, and save the result as a output file in the S3 bucket, following code do that job:</p>
+<pre><code>aws emr add-steps --cluster-id [Cluster-ID] \
+--steps Type=spark,Name=[Name-Your-Step],\
+Args=[--deploy-mode,cluster,--master,yarn,\
+--conf,spark.yarn.submit.waitAppCompletion=false,\
+--num-executors,2,--executor-cores,2,--executor-memory,1g,\
+[Path-To-Script-In-S3],\
+[Path-To-Input-In-S3],\
+[Path-To-Output-In-S3]],\
+ActionOnFailure=CONTINUE</code></pre>
+<p>Replace all the placeholders with the related values and run the command line:</p>
+<pre><code>aws emr add-steps --cluster-id &quot;j-4CN8X8R8ZOSL&quot; \
+--steps Type=spark,Name=spark-job-step,\
+Args=[--deploy-mode,cluster,--master,yarn,\
+--conf,spark.yarn.submit.waitAppCompletion=false,\
+s3://pyspark-job/script/pyspark_word_count.py,\
+s3://pyspark-job/input/text.txt,\
+s3://pyspark-job/output/],\
+ActionOnFailure=CONTINUE</code></pre>
+<p><em>You may need to run <code>setopt +o nomatch</code> first if your are running the zsh shell in your Terminal to avoid nay <code>zsh: no match found</code> error.</em></p>
+<p>After successfully execute the command, the StepId will be returned:</p>
+<pre><code>&#123;
+    &quot;StepIds&quot;: [
+        &quot;s-8YATQIVZWW7X&quot;
+    ]
+&#125;</code></pre>
+<p>And then under the EMR cluster <strong>Steps</strong> tab, step <code>spark-job-step</code> status will turn to <strong>Completed</strong> after few seconds as showed below:<br><img src="/blog/indepth-study/msk_step.png" alt="step"></p>
+<p>Meanwhile, under the <code>output</code> folder in the S3 bucket, step results are saved as separate part files which store the cout number for each word in the input file:<br><img src="/blog/indepth-study/msk_step_output.png" alt="step_output"></p>
+<h1 id="4-Task-4-Real-time-Credit-Card-Fraud-Detection-Pipeline"><a href="#4-Task-4-Real-time-Credit-Card-Fraud-Detection-Pipeline" class="headerlink" title="4. Task 4: Real-time Credit Card Fraud Detection Pipeline"></a>4. Task 4: Real-time Credit Card Fraud Detection Pipeline</h1><h2 id="4-1-Workflow-and-Architecture"><a href="#4-1-Workflow-and-Architecture" class="headerlink" title="4.1. Workflow and Architecture"></a>4.1. Workflow and Architecture</h2><p>Following figure illustrates the workflow and architecture of the whole pipeline:<br><img src="/blog/indepth-study/architecture.png" alt="architecture"></p>
+<p>For the set-up part, I first simulate 100 costumers’ information and stored in the <a href="/blog/indepth-study/customer.csv"><code>customer.csv</code></a> file, and over 10K transaction records stored in the <code>transaction_training.csv</code> file. Then, call a Spark SQL job to retrieve those data and import them into a Cassandra database. Next, run a Spark ML job to read the data from Cassandra, train on those data and create the models (Preprocessing and Random Forest) to classify the transaction records are fraud or not. </p>
+<p>After the models are saved to the file system, start a Spark Streaming job that would load the ML models and also consume credit card transactions from Kafka. Create a Kafka topic and produce transaction records from the <code>transaction_testing.csv</code> file as messages that would be consumed by the Spark Streaming job. And the streaming job would predict whether these transactions are fraud or not and then save them into the <code>fraud_transaction</code> and <code>non_fraud_transaction</code> tables separately based on the classification.</p>
+<p>With the classified in-coming transaction records stored in the Cassandra database, I use the Spring Boot framework to display the frand and non-fraud transactions in real-time on the dashboard web page. Meanwhile, I also use the Flask framework to create two REST APIs to easily retrieve one customer’s information and create the transaction statement for each customer.</p>
+<p>A video demo for the workflow could be found here:</p>
+<h2 id="4-2-Implementation-Details"><a href="#4-2-Implementation-Details" class="headerlink" title="4.2. Implementation Details"></a>4.2. Implementation Details</h2><h3 id="4-2-1-Customers-amp-Transactions-dataset"><a href="#4-2-1-Customers-amp-Transactions-dataset" class="headerlink" title="4.2.1. Customers &amp; Transactions dataset"></a>4.2.1. Customers &amp; Transactions dataset</h3><p>Stimulate 100 customers using <a target="_blank" rel="noopener" href="https://www.mockaroo.com/">Mockaroo</a>. For each record, it includes following columns (information):</p>
+<ul>
+<li>cc_num: credit card number which unqily indentify each card / customer</li>
+<li>first: customer’s first name</li>
+<li>last: customer’s last name</li>
+<li>gender: customer’s gender</li>
+<li>street</li>
+<li>city</li>
+<li>state</li>
+<li>zip: zipcode for the address above</li>
+<li>lat: latitude for the address above</li>
+<li>long: longitude for the address above</li>
+<li>job: customer’s vocation</li>
+<li>dob: the date of birth for the customer</li>
+</ul>
+<p>Also generate over 10K transaction records for these customers using the same way. For each record, it includes following columns (information):</p>
+<ul>
+<li>cc_num: credit card number which unqily indentify each card / customer</li>
+<li>first: customer’s first name</li>
+<li>last: customer’s last name</li>
+<li>trans_num: transaction number</li>
+<li>trans_date: transaction date</li>
+<li>trans_time: transaction time</li>
+<li>unix_time: transaction time in unix timestamp format</li>
+<li>category: category for the purchased item</li>
+<li>amt: transaction amount</li>
+<li>merchant: the place that the transaction happened</li>
+<li>merch_lat: latitude for the merchant</li>
+<li>merch_long: longitude for the merchant</li>
+<li>is_fraud: boolean to indicate the transaction is fraud or not</li>
+</ul>
+<p>These transaction records would be later used as the training set and testing set with the spliting ratio as 80%.</p>
+<h3 id="4-2-2-Spark-ML-job"><a href="#4-2-2-Spark-ML-job" class="headerlink" title="4.2.2. Spark ML job"></a>4.2.2. Spark ML job</h3><p>First, run s Spark SQL job to retrieve the customers and transaction training data and import them into the Cassandra database. When importing the transactions data, the job also calculates two extra features <code>age</code> and <code>distance</code> where <code>age</code> is the age of each customer by the time the data are imported according to his/her date of birth; <code>distance</code> is the distance between the customer’s address and the merchant’s address by calculating the Euclidean distance between two places using the latitude &amp; longitude infomation. All the training data (including two extra features) would be splitted and stored in the fraud table and non-fraud table separatly based on each record is fraud or not.</p>
+<p>Spark ML Job will load fraud and non-fraud transactions from fraud and non-fraud tables respectively. This will create 2 different dataframes in Spark. Next, these 2 dataframes are combined together using Union function, and Spark ML Pipeline Stages will be applied on this dataframe. </p>
+<ul>
+<li>First, String Indexer will be applied to transform the selected columns into double values. Since machine learning algorithm would not understand string values but only double values. </li>
+<li>Second, One Hot Encoder will be applied to normalize these double values. The reason double values must be normalised is becuase machine-learning algorithm assumes higher the value better the category.</li>
+<li>Third, Vector Assembler is applied to assemble all the transformed columns into one column. This column is called a feature column. And the values of this column is a vector. This feature column will be given as input to the model creation algorithm. </li>
+</ul>
+<p>After assembled the feature column, then train the algorithm with this dataframe. However, currently data are not balanced giving that number of non-fraud transactions is way larger than the number of fraud transactions. If such unbalanced data are used for training, then the algorithm would not create an accurate model. Hence, there is one more step need to apply before training is to balance the data to enforece the number of non-fraud transactions must be almost equal to number of fraud transactions. Here, the job uses K-means algorithm to reduce the number of non-fraud transactions. After that, the job will combine both the dataframes and form a single dataframe as a balanced one. Then apply Random Forest algorithm on this dataframe that use feature column for training and create the prediction/classification model. And finally, save the model to filesystem.</p>
+<p>Following figure illustrates the entire Spark ML job workflow:<br><img src="/blog/indepth-study/spark_ml.png" alt="spark_ml"></p>
+<h3 id="4-2-3-Kafka-producer"><a href="#4-2-3-Kafka-producer" class="headerlink" title="4.2.3. Kafka producer"></a>4.2.3. Kafka producer</h3><p>Create a Kafka topic named as <code>creditcardTransaction</code> with 3 partitions. </p>
+<pre><code>kafka-topics --zookeeper localhost:2181 --create --topic creditcardTransaction  --replication-factor 1 --partitions 3</code></pre>
+<p>The Kafka producer job would randomly select transactions from the transaction training dataset as messages and save the current timestamp into the messages as the transaction time. Later, these messages would be fed into the Spark Streaming job.</p>
+<h3 id="4-2-4-Spark-Streaming-job"><a href="#4-2-4-Spark-Streaming-job" class="headerlink" title="4.2.4. Spark Streaming job"></a>4.2.4. Spark Streaming job</h3><p>In the Spark Streaming job, it first starts by consuming credit card transaction messages from Kafka via the topic <code>creditcardTransaction</code>. Then, for each message, it reads customer data from Cassandra to compute age of the customer and calculate distance between merchant and customer place, since age and distance will be used as features in the prediction. After that, load both Preprocessing and Random Forest models that were created by Spark ML job. These 2 models will be used to transform and predict whether a transaction is fraud transaction or not. Once the transactions are predicted, the records would be saved in the Cassandra database where fraud transactions will be saved to fraud table and non-fraud transactions will be saved to non-fraud table. Also each message would be offered a partition number and a offset number to indicate the location in the topic. These partition and offset information would be saved in the Kafka offset table to achieve exactly once semantics.</p>
+<h3 id="4-2-5-Front-end-dashboard"><a href="#4-2-5-Front-end-dashboard" class="headerlink" title="4.2.5. Front-end dashboard"></a>4.2.5. Front-end dashboard</h3><p>The front-end dashboard class is designed with Spring Bot framework that would select fraud and non-fraud transactions from Cassandra tables and display it on the dashboard in real-time. This method will call a select query to retrieve the latest fraud and non-fraud transactions that occurred in the last 5 seconds and display it on the dashboard. To display the record only once, the method maintains the max timestamp of previously displayed fraud/non-fraud transactions. And in the current trigger, it would only select those transactions whose timestamp is greater than the previous max timestamp.</p>
+<p>Following screenshot illustrates a basic scenario of the dashboard interface:<br><img src="/blog/indepth-study/dashboard.png" alt="dashboard"></p>
+<h3 id="4-2-6-REST-API-for-customers-and-transaction-statements"><a href="#4-2-6-REST-API-for-customers-and-transaction-statements" class="headerlink" title="4.2.6. REST API for customers and transaction statements"></a>4.2.6. REST API for customers and transaction statements</h3><p>I also design two REST APIs with the Flask framework to easily retrieve the customer infomation and create transaction statements for customers. They are all implemented by calling SQL queries to select records from the Cassandra non-fraud table.</p>
+<ul>
+<li>For customer information, the endpoint is: <code>/api/customer/&lt;cc_num&gt;</code> which would return basic information for the credit card <code>&lt;cc_num&gt;</code> owner.</li>
+<li>For creating a transaction statement for the specific customer, the endpoint is: <code>api/statement/&lt;cc_num&gt;</code> which would return all the transaction records for the credit card <code>&lt;cc_num&gt;</code> and order them by transaction time.</li>
+</ul>
+<p>Following screenshots illustrate the examples of two API calls:<br><img src="/blog/indepth-study/api_customer.png" alt="api_customer"></p>
+<p><img src="/blog/indepth-study/api_statement.png" alt="api_statement"></p>
 </p></div><div class="pagination"><p class="clearfix"><span>&nbsp;</span><span class="next pagbuttons"><a role="navigation" href="/blog/matrix-factorization/" title="Decode the Secrets Behind Recommender Systems">Next post: Decode the Secrets Behind Recommender Systems&nbsp;<i class="fa fa-angle-double-right"></i></a></span></p></div></div></div></div><div class="visible-xs site-bottom-footer"><footer><p>&copy;&nbsp;2020&nbsp;<a target="_blank" href="https://j-an.org/" rel="noopener noreferrer">J. An</a></p></footer></div></div></div></div><script src="/blog/js/jquery-3.1.0.min.js"></script><script src="/blog/js/bootstrap.min.js"></script><script src="/blog/js/jquery-migrate-1.2.1.min.js"></script><script src="/blog/js/jquery.appear.js"></script><script src="/blog/js/google-analytics.js"></script><script src="/blog/js/typography.js"></script></body></html>
